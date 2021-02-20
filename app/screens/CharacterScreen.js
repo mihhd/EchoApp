@@ -23,7 +23,6 @@ const characters = [
   },
   {
     id: 2,
-    title: "Apple",
     image: require("../assets/i1.png"),
   },
   {

@@ -19,15 +19,21 @@ function HomeScreen() {
   const [items, setItems] = React.useState(null);
   const navigation = useNavigation();
 
-  React.useEffect(() => {
+  function selectItems() {
     db.transaction((tx) => {
       tx.executeSql(
         `select * from items where category = "Home";`,
         [],
-        (_, { rows: { _array } }) => setItems(_array),
+        (_, { rows: { _array } }) => {
+          setItems(_array);
+        },
         () => console.log("kurac")
       );
     });
+  }
+
+  React.useEffect(() => {
+    selectItems();
   }, [items]);
 
   React.useLayoutEffect(() => {
@@ -90,7 +96,7 @@ const styles = StyleSheet.create({
 // });
 
 // async function deleteAllGifs() {
-//   console.log("Deleting all GIF files...");
+//   console.log("Deleting all files...");
 //   await FileSystem.deleteAsync(soundsDir);
 //   await FileSystem.deleteAsync(imagesDir);
 // }

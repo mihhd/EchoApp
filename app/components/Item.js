@@ -6,6 +6,7 @@ import * as SQLite from "expo-sqlite";
 import colors from "../config/colors";
 import AppText from "./AppText";
 import { useNavigation } from "@react-navigation/native";
+import { assetsItems } from "../config/assetsItems";
 
 const db = SQLite.openDatabase("echoDB.db");
 
@@ -16,14 +17,19 @@ function Item({ item }) {
 
   async function playSound() {
     console.log("Loading Sound");
+    var a = assetsItems.find((i) => i.name === item.name);
     try {
-      const { sound } = await Audio.Sound.createAsync({ uri: item.sound });
+      const { sound } = await Audio.Sound.createAsync(
+        item.sound.startsWith("file")
+          ? { uri: item.sound }
+          : assetsItems.find((i) => i.name === item.name).sound
+      );
       setSound(sound);
 
       console.log("Playing Sound");
       await sound.playAsync();
     } catch (error) {
-      console.log("NE PEJ");
+      console.log("NE PEJ + " + error);
     }
   }
 
@@ -62,7 +68,12 @@ function Item({ item }) {
   return (
     <TouchableOpacity onPress={() => itemTouched()}>
       <View style={styles.container}>
-        <Image source={{ uri: item.image }} style={styles.image} />
+        <Image
+          source={
+            typeof a_string === "string" ? { uri: item.image } : item.image
+          }
+          style={styles.image}
+        />
         <AppText style={styles.text}> {item.name} </AppText>
       </View>
     </TouchableOpacity>
