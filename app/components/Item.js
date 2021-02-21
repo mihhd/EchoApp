@@ -10,14 +10,12 @@ import { assetsItems } from "../config/assetsItems";
 
 const db = SQLite.openDatabase("echoDB.db");
 
-function Item({ item }) {
+function Item({ item, setHeaderTitle }) {
   const [sound, setSound] = React.useState();
-  const [categoryItems, setCategoryItems] = React.useState(null);
   const navigation = useNavigation();
 
   async function playSound() {
     console.log("Loading Sound");
-    var a = assetsItems.find((i) => i.name === item.name);
     try {
       const { sound } = await Audio.Sound.createAsync(
         item.sound.startsWith("file")
@@ -36,24 +34,35 @@ function Item({ item }) {
   function itemTouched() {
     playSound();
 
+    if (item.sound != null) {
+      setHeaderTitle(item.name);
+    }
+
     if (item.is_category == 1) {
+      selectCategoryItems().then((results) => navigateToCategory(results));
+    }
+  }
+
+  async function selectCategoryItems() {
+    return new Promise((resolve, reject) => {
       db.transaction((tx) => {
         tx.executeSql(
           `select * from items where category = ?;`,
           [item.name],
           (_, { rows: { _array } }) => {
-            setCategoryItems(_array);
-            console.log(categoryItems);
-            navigation.navigate("Category", {
-              items: categoryItems,
-              categoryName: item.name,
-            });
+            resolve(_array);
           }
         );
       });
-    } else {
-      navigation.setOptions({ title: item.name });
-    }
+    });
+  }
+
+  function navigateToCategory(results) {
+    console.log(results);
+    navigation.navigate("Category", {
+      items: results,
+      categoryName: item.name,
+    });
   }
 
   React.useEffect(() => {
@@ -70,7 +79,7 @@ function Item({ item }) {
       <View style={styles.container}>
         <Image
           source={
-            typeof a_string === "string" ? { uri: item.image } : item.image
+            item.image.startsWith("file") ? { uri: item.image } : item.image
           }
           style={styles.image}
         />

@@ -24,7 +24,10 @@ export default function App() {
             resolve(rows._array);
             console.log(sql + " OK");
           },
-          reject
+          () => {
+            console.log("ERROR " + sql);
+            reject;
+          }
         );
       })
     );

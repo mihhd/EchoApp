@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useLayoutEffect, useState } from "react";
 import { View, StyleSheet, FlatList } from "react-native";
 import * as SQLite from "expo-sqlite";
 import * as FileSystem from "expo-file-system";
@@ -10,13 +10,17 @@ import { useNavigation } from "@react-navigation/native";
 import EditButton from "../components/EditButton";
 import SettingsHeader from "../components/SettingsHeader";
 import IconButton from "../components/IconButton";
+import { useEffect } from "react";
+import { useContext } from "react";
+import MainContext from "../context/mainContext";
 
 const db = SQLite.openDatabase("echoDB.db");
 const imagesDir = FileSystem.documentDirectory + "images/";
 const soundsDir = FileSystem.documentDirectory + "sounds/";
 
 function HomeScreen() {
-  const [items, setItems] = React.useState(null);
+  const mainContext = useContext(MainContext);
+  const [items, setItems] = useState(null);
   const navigation = useNavigation();
 
   function selectItems() {
@@ -32,13 +36,13 @@ function HomeScreen() {
     });
   }
 
-  React.useEffect(() => {
+  useEffect(() => {
     selectItems();
   }, [items]);
 
-  React.useLayoutEffect(() => {
+  useLayoutEffect(() => {
     initialHeader();
-  }, [navigation]);
+  }, []);
 
   function initialHeader() {
     navigation.setOptions({
@@ -64,6 +68,24 @@ function HomeScreen() {
     });
   }
 
+  function setHeaderTitle(addTitle) {
+    if (addTitle === mainContext.title.split(" ").pop()) {
+      return;
+    }
+
+    var newTitle = mainContext.title + " " + addTitle;
+    if (newTitle.split(" ").length > 4) {
+      console.log("pogolemo");
+
+      newTitle = newTitle.split(" ").splice(-4).join(" ");
+    }
+    console.log(newTitle);
+    mainContext.setTitle(newTitle);
+    navigation.setOptions({
+      title: newTitle,
+    });
+  }
+
   return (
     <Screen>
       <View style={styles.container}>
@@ -72,7 +94,9 @@ function HomeScreen() {
           keyExtractor={(item) => item.id.toString()}
           numColumns="3"
           columnWrapperStyle={styles.columnWrapper}
-          renderItem={({ item }) => <Item item={item} />}
+          renderItem={({ item }) => (
+            <Item item={item} setHeaderTitle={setHeaderTitle} />
+          )}
         />
       </View>
     </Screen>
