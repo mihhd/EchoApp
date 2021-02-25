@@ -1,6 +1,6 @@
 import { useNavigation } from "@react-navigation/native";
 import React from "react";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { View, StyleSheet, FlatList } from "react-native";
 import EditButton from "../components/EditButton";
 import IconButton from "../components/IconButton";
@@ -9,27 +9,32 @@ import Screen from "../components/Screen";
 import SettingsHeader from "../components/SettingsHeader";
 import colors from "../config/colors";
 import MainContext from "../context/mainContext";
+import EditModal from "../components/EditModal";
 
 function CategoryScreen({ route }) {
   const mainContext = useContext(MainContext);
   const navigation = useNavigation();
-  const [items, setItems] = React.useState(null);
 
-  React.useEffect(() => {
-    setItems(route.params.items);
-  }, [items]);
+  const [editMode, setEditMode] = useState();
+  const [modalVisible, setModalVisible] = useState(false);
+  const [itemToEdit, setItemToEdit] = useState();
+
+  // React.useEffect(() => {
+  // }, [route.params.items]);
 
   React.useLayoutEffect(() => {
     initialHeader();
   }, []);
 
   function initialHeader() {
+    setEditMode(false);
+
     navigation.setOptions({
       title: mainContext.title,
       headerLeft: () => <EditButton onPress={() => settingsHeader()} />,
       headerRight: () => (
         <View style={{ marginLeft: 10 }}>
-          <IconButton name={"arrow-left"} onPress={handleGoBack} />
+          <IconButton name={"backspace-outline"} onPress={handleGoBack} />
         </View>
       ),
     });
@@ -41,6 +46,8 @@ function CategoryScreen({ route }) {
   }
 
   function settingsHeader() {
+    setEditMode(true);
+
     navigation.setOptions({
       title: "",
       headerRight: () => <SettingsHeader root={route.params.categoryName} />,
@@ -70,19 +77,34 @@ function CategoryScreen({ route }) {
     });
   }
 
+  function editItem(item) {
+    setItemToEdit(item);
+    setModalVisible(true);
+  }
+
   return (
     <Screen>
       <View style={styles.container}>
         <FlatList
-          data={items}
+          data={route.params.items}
           keyExtractor={(item) => item.id.toString()}
           numColumns="3"
           columnWrapperStyle={styles.columnWrapper}
           renderItem={({ item }) => (
-            <Item item={item} setHeaderTitle={setHeaderTitle} />
+            <Item
+              item={item}
+              setHeaderTitle={setHeaderTitle}
+              editMode={editMode}
+              editItem={editItem}
+            />
           )}
         />
       </View>
+      <EditModal
+        itemToEdit={itemToEdit}
+        modalVisible={modalVisible}
+        setModalVisible={setModalVisible}
+      />
     </Screen>
   );
 }

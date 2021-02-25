@@ -3,11 +3,12 @@ import { View, StyleSheet, TouchableOpacity } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { Audio } from "expo-av";
 import { Stopwatch } from "react-native-stopwatch-timer";
+import { assetsItems } from "../config/assetsItems";
 
 import AppText from "./AppText";
 import colors from "../config/colors";
 
-function AudioBar({ category, uri, setUri }) {
+function AudioBar({ category, uri, setUri, item = null }) {
   category = category;
   const [recording, setRecording] = useState();
   const [isStopwatchStart, setIsStopwatchStart] = useState(false);
@@ -19,8 +20,18 @@ function AudioBar({ category, uri, setUri }) {
       return;
     }
     const soundObject = new Audio.Sound();
+
     try {
-      await soundObject.loadAsync({ uri });
+      if (item !== null) {
+        await soundObject.loadAsync(
+          uri.startsWith("file")
+            ? { uri: uri }
+            : assetsItems.find((i) => i.name === item.name).sound
+        );
+      } else {
+        await soundObject.loadAsync({ uri });
+      }
+
       let audioPlayer1 = soundObject;
       audioPlayer1.playAsync();
       // Your sound is playing!

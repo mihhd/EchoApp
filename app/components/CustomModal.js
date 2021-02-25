@@ -52,7 +52,10 @@ const CustomModal = ({ setModalVisible, modalVisible, setImage }) => {
           setModalVisible(!modalVisible);
         }}
       >
-        <View style={styles.centeredView}>
+        <TouchableOpacity
+          style={styles.centeredView}
+          onPress={() => setModalVisible(!modalVisible)}
+        >
           <View style={styles.modalView}>
             <Pressable
               style={styles.buttonClose}
@@ -92,7 +95,7 @@ const CustomModal = ({ setModalVisible, modalVisible, setImage }) => {
               </View>
             </View>
           </View>
-        </View>
+        </TouchableOpacity>
       </Modal>
     </>
   );

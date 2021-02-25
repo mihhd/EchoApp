@@ -7,10 +7,11 @@ import colors from "../config/colors";
 import AppText from "./AppText";
 import { useNavigation } from "@react-navigation/native";
 import { assetsItems } from "../config/assetsItems";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 const db = SQLite.openDatabase("echoDB.db");
 
-function Item({ item, setHeaderTitle }) {
+function Item({ item, setHeaderTitle, editMode, editItem }) {
   const [sound, setSound] = React.useState();
   const navigation = useNavigation();
 
@@ -32,14 +33,18 @@ function Item({ item, setHeaderTitle }) {
   }
 
   function itemTouched() {
-    playSound();
+    if (editMode) {
+      editItem(item);
+    } else {
+      playSound();
 
-    if (item.sound != null) {
-      setHeaderTitle(item.name);
-    }
+      if (item.sound != null) {
+        setHeaderTitle(item.name);
+      }
 
-    if (item.is_category == 1) {
-      selectCategoryItems().then((results) => navigateToCategory(results));
+      if (item.is_category == 1) {
+        selectCategoryItems().then((results) => navigateToCategory(results));
+      }
     }
   }
 
@@ -76,6 +81,16 @@ function Item({ item, setHeaderTitle }) {
 
   return (
     <TouchableOpacity onPress={() => itemTouched()}>
+      {editMode && (
+        <View style={styles.edit}>
+          <MaterialCommunityIcons
+            name="pencil-outline"
+            size={25}
+            color={colors.light}
+          />
+        </View>
+      )}
+
       <View style={styles.container}>
         <Image
           source={
@@ -103,6 +118,16 @@ const styles = StyleSheet.create({
     overflow: "hidden",
     width: 110,
     padding: 5,
+  },
+  edit: {
+    alignSelf: "flex-end",
+    borderRadius: 50,
+    backgroundColor: "#babedf",
+    alignItems: "center",
+    justifyContent: "center",
+    marginBottom: -25,
+    marginRight: -5,
+    zIndex: 15,
   },
   image: {
     width: "80%",

@@ -15,6 +15,8 @@ import AppText from "../components/AppText";
 import AudioBar from "../components/AudioBar";
 import CustomModal from "../components/CustomModal";
 import { useNavigation } from "@react-navigation/native";
+import { useEffect } from "react/cjs/react.development";
+import { Value } from "react-native-reanimated";
 
 const db = SQLite.openDatabase("echoDB.db");
 
@@ -33,7 +35,36 @@ function AddEditScreen({ route }) {
 
   const navigation = useNavigation();
 
-  async function insertData(name) {
+  useEffect(() => {
+    if (typeof route.params.item !== "undefined") {
+      setImage(route.params.item.image);
+      setUri(route.params.item.sound);
+    }
+  }, []);
+
+  async function saveData(name) {
+    if (typeof route.params.item !== "undefined") {
+      updateData(name);
+    } else {
+      insertData(name);
+    }
+  }
+
+  async function updateData(name) {
+    var newImageLocation = moveImageToDocumentDir(name);
+    var newSoundLocation = moveSoundToDocumentDir(name);
+
+    console.log("idemo");
+
+    Promise.all([newImageLocation, newSoundLocation])
+      .then((val) => updateItem(route.params.item.id, name, val[0], val[1]))
+      .then(navigate())
+      .catch((error) => {
+        console.error(error.message);
+      });
+  }
+
+  function insertData(name) {
     if (image === "") {
       Alert.alert(
         "Missing image",
@@ -44,34 +75,72 @@ function AddEditScreen({ route }) {
       return;
     }
 
-    const imgDirInfo = await FileSystem.getInfoAsync(imagesDir);
-    const sndDirInfo = await FileSystem.getInfoAsync(soundsDir);
+    var newImageLocation = moveImageToDocumentDir(name);
+    var newSoundLocation = moveSoundToDocumentDir(name);
 
-    if (!imgDirInfo.exists) {
-      console.log("Images directory doesn't exist, creating...");
-      await FileSystem.makeDirectoryAsync(imagesDir, { intermediates: true });
-    }
+    console.log("idemo");
 
-    if (!sndDirInfo.exists) {
-      console.log("Sounds directory doesn't exist, creating...");
-      await FileSystem.makeDirectoryAsync(soundsDir, { intermediates: true });
-    }
+    Promise.all([newImageLocation, newSoundLocation])
+      .then((val) => insertToDB(name, val[0], val[1]))
+      .then(navigate())
+      .catch((error) => {
+        console.error(error.message);
+      });
+  }
 
-    let fileExtension = image.split(".").pop();
-    let newImageLocation = imagesDir + name + "." + fileExtension;
-    FileSystem.moveAsync({ from: image, to: newImageLocation });
+  function moveImageToDocumentDir(name) {
+    return new Promise((resolve, reject) => {
+      const imgDirInfo = FileSystem.getInfoAsync(imagesDir);
 
-    let newSoundLocation = soundsDir + name + ".m4a";
-    FileSystem.moveAsync({ from: uri, to: newSoundLocation });
+      if (!imgDirInfo.exists) {
+        console.log("Images directory doesn't exist, creating...");
+        FileSystem.makeDirectoryAsync(imagesDir, { intermediates: true });
+      }
 
-    console.log(newImageLocation);
-    console.log(newSoundLocation);
+      let fileExtension = image.split(".").pop();
 
-    var arr = insertToDB(name, newImageLocation, newSoundLocation);
+      var newLocation;
+      if (route.params.item && image === route.params.item.image) {
+        newLocation = image;
+      } else {
+        newLocation = imagesDir + name + "." + fileExtension;
+        console.log("New image location: " + newLocation);
 
+        FileSystem.copyAsync({ from: image, to: newLocation });
+      }
+
+      resolve(newLocation);
+    });
+  }
+
+  function moveSoundToDocumentDir(name) {
+    return new Promise((resolve, reject) => {
+      const sndDirInfo = FileSystem.getInfoAsync(soundsDir);
+
+      if (!sndDirInfo.exists) {
+        console.log("Sounds directory doesn't exist, creating...");
+        FileSystem.makeDirectoryAsync(soundsDir, { intermediates: true });
+      }
+
+      var newLocation;
+      if (route.params.item && uri === route.params.item.sound) {
+        newLocation = uri;
+      } else {
+        newLocation = soundsDir + name + ".m4a";
+        console.log("New sound location: " + newLocation);
+
+        FileSystem.copyAsync({ from: uri, to: newLocation });
+      }
+      resolve(newLocation);
+    });
+  }
+
+  function navigate() {
     if (route.params.root === "Home") {
       navigation.goBack("Home");
     } else {
+      var arr = getCategoryItems();
+
       navigation.replace("Category", {
         items: arr.map((i) => i.category === selectedValue),
       });
@@ -79,24 +148,53 @@ function AddEditScreen({ route }) {
   }
 
   function insertToDB(name, newImageLocation, newSoundLocation) {
+    return new Promise((resolve, reject) => {
+      db.transaction((tx) => {
+        tx.executeSql(
+          "insert into items (name, image, sound, category, is_category) values (?, ?, ?, ?, ?)",
+          [
+            name,
+            newImageLocation,
+            newSoundLocation,
+            selectedValue,
+            route.params.isCategory,
+          ],
+          (_, results) => {
+            console.log("Results", results.rowsAffected);
+            resolve();
+          },
+          (_, err) => {
+            console.log(err);
+            reject();
+          }
+        );
+      });
+    });
+  }
+
+  function updateItem(id, name, newImageLocation, newSoundLocation) {
+    return new Promise((resolve, reject) => {
+      db.transaction((tx) => {
+        tx.executeSql(
+          "UPDATE items SET name = ?, image = ?, sound = ?, category = ? WHERE id = ?",
+          [name, newImageLocation, newSoundLocation, selectedValue, id],
+          () => {
+            console.log("Update success");
+            resolve();
+          },
+          (_, err) => {
+            console.log(err);
+            reject();
+          }
+        );
+      });
+    });
+  }
+
+  function getCategoryItems() {
     var arr = [];
+
     db.transaction((tx) => {
-      tx.executeSql(
-        "insert into items (name, image, sound, category, is_category) values (?, ?, ?, ?, ?)",
-        [
-          name,
-          newImageLocation,
-          newSoundLocation,
-          selectedValue,
-          route.params.isCategory,
-        ],
-        (_, results) => {
-          console.log("Results", results.rowsAffected);
-        },
-        (_, err) => {
-          console.log(err);
-        }
-      );
       tx.executeSql("select * from items", [], (_, { rows }) => {
         console.log(JSON.stringify(rows));
         arr = rows;
@@ -111,7 +209,10 @@ function AddEditScreen({ route }) {
       <TouchableOpacity onPress={() => setModalVisible(true)}>
         <View style={styles.image}>
           {image ? (
-            <Image style={styles.imageInside} source={{ uri: image }} />
+            <Image
+              style={styles.imageInside}
+              source={image.startsWith("file") ? { uri: image } : image}
+            />
           ) : (
             <MaterialCommunityIcons name="camera-plus" size={150} />
           )}
@@ -126,7 +227,7 @@ function AddEditScreen({ route }) {
 
       <AppForm
         initialValues={{ name: "" }}
-        onSubmit={(values) => insertData(values.name)}
+        onSubmit={(values) => saveData(values.name)}
         validationSchema={validationSchema}
       >
         <View style={styles.marginBottom}>
@@ -139,11 +240,12 @@ function AddEditScreen({ route }) {
             style={styles.text}
           />
         </View>
-        {!route.params.isCategory && (
+        {!route.params.is_category && (
           <View style={styles.marginBottom}>
             <AppText style={styles.text}>Category</AppText>
 
             <Dropdown
+              root={route.params.root}
               selectedValue={selectedValue}
               setSelectedValue={setSelectedValue}
             />
@@ -154,6 +256,7 @@ function AddEditScreen({ route }) {
           <AudioBar
             category={route.params.isCategory}
             uri={uri}
+            item={route.params.item}
             setUri={setUri}
           />
         </View>
