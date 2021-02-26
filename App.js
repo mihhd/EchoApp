@@ -10,6 +10,9 @@ import { NavigationContainer } from "@react-navigation/native";
 import MainNavigator from "./app/navigation/MainNavigator";
 import navigationTheme from "./app/navigation/navigationTheme";
 import { assetsItems } from "./app/config/assetsItems";
+import LanguageScreen from "./app/screens/LanguageScreen";
+import WelcomeNavigator from "./app/navigation/WelcomeNavigator";
+import AppContext from "./app/context/appContext";
 
 const db = SQLite.openDatabase("echoDB.db");
 
@@ -72,10 +75,19 @@ export default function App() {
     selectItems();
   }, []);
 
+  const [settings, setSettings] = useState({
+    language: "en",
+    character: "I",
+    pin: "0000",
+    first_run: 1,
+  });
+
   return (
-    <NavigationContainer theme={navigationTheme}>
-      <MainNavigator />
-    </NavigationContainer>
+    <AppContext.Provider value={{ settings, setSettings }}>
+      <NavigationContainer theme={navigationTheme}>
+        {settings.first_run ? <WelcomeNavigator /> : <MainNavigator />}
+      </NavigationContainer>
+    </AppContext.Provider>
   );
 }
 

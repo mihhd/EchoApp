@@ -2,9 +2,9 @@ import React from "react";
 import { View, StyleSheet, TouchableOpacity, Image } from "react-native";
 import colors from "../config/colors";
 
-function Character({ image }) {
+function Character({ image, chooseCharacter }) {
   return (
-    <TouchableOpacity onPress={() => console.log("haaa")}>
+    <TouchableOpacity onPress={() => chooseCharacter(image)}>
       <View style={styles.container}>
         <Image source={image} style={styles.image} />
       </View>

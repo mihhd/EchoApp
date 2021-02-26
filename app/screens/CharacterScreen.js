@@ -15,6 +15,8 @@ import colors from "../config/colors";
 import Screen from "../components/Screen";
 import Character from "../components/Character";
 import CustomModal from "../components/CustomModal";
+import { useContext } from "react";
+import AppContext from "../context/appContext";
 
 const characters = [
   {
@@ -43,16 +45,29 @@ const characters = [
   },
 ];
 
-function CharacterScreen(props) {
+function CharacterScreen({ route }) {
+  const appContext = useContext(AppContext0);
+
   const [modalVisible, setModalVisible] = useState(false);
   const [image, setImage] = useState(null);
+
+  function chooseCharacter(image) {
+    appContext.setSettings({
+      language: route.params.language,
+      character: image,
+      pin: "0000",
+      first_fun: 0,
+    });
+
+    console.log(appContext.settings);
+  }
 
   return (
     <Screen>
       <View style={styles.container}>
         <View style={styles.center}>
           <AppText style={styles.title}>Choose a Character</AppText>
-          <Separator style={styles.separator} />
+          <Separator />
         </View>
 
         <FlatList
@@ -61,17 +76,22 @@ function CharacterScreen(props) {
           numColumns="3"
           columnWrapperStyle={styles.columnWrapper}
           style={styles.flatList}
-          renderItem={({ item }) => <Character image={item.image} />}
+          renderItem={({ item }) => (
+            <Character chooseCharacter={chooseCharacter} image={item.image} />
+          )}
         />
 
         {image && (
           <View style={[styles.center, { marginTop: -20 }]}>
-            <Character image={{ uri: image }} />
+            <Character
+              chooseCharacter={chooseCharacter}
+              image={{ uri: image }}
+            />
           </View>
         )}
 
         <View style={styles.center}>
-          <Separator style={styles.separator} />
+          <Separator />
           <TouchableOpacity
             style={styles.button}
             onPress={() => setModalVisible(true)}
@@ -118,11 +138,6 @@ const styles = StyleSheet.create({
   buttonText: {
     color: colors.white,
     fontSize: 28,
-  },
-  separator: {
-    color: colors.medium,
-    width: "30%",
-    margin: 20,
   },
   columnWrapper: {
     justifyContent: "space-evenly",
