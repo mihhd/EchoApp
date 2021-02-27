@@ -1206,16 +1206,6 @@ export const assetsItems = [
   },
 
   {
-    name_en: "Run",
-    name_mk: "Да трчам",
-    image: require("../assets/iconblocks/rungril.png"),
-    sound_en: require("../assets/audio/run.mp3"),
-    sound_mk: require("../assets/audio/da_trcam.mp3"),
-    category: "Verbs",
-    is_category: "0",
-  },
-
-  {
     name_en: "Walk",
     name_mk: "Да пешачам",
     image: require("../assets/iconblocks/to_go.png"),
