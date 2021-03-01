@@ -617,7 +617,7 @@ export const assetsItems = [
     name_mk: "Кукла",
     image: require("../assets/iconblocks/doll.png"),
     sound_en: require("../assets/audio/doll.mp3"),
-    sound_mk: require("../assets/audio/kukli.mp3"),
+    sound_mk: require("../assets/audio/kukla.mp3"),
     category: "To Play",
     is_category: "0",
   },
@@ -745,10 +745,10 @@ export const assetsItems = [
 
   {
     name_en: "Tired",
-    name_mk: "Уморено",
+    name_mk: "Изморено",
     image: require("../assets/iconblocks/tired.png"),
     sound_en: require("../assets/audio/tired.mp3"),
-    sound_mk: require("../assets/audio/umoreno.mp3"),
+    sound_mk: require("../assets/audio/izmoreno.mp3"),
     category: "Feel",
     is_category: "0",
   },
@@ -1095,7 +1095,7 @@ export const assetsItems = [
 
   {
     name_en: "Underwear",
-    name_mk: "Долен веш",
+    name_mk: "Гаќи",
     image: require("../assets/iconblocks/underwear.png"),
     sound_en: require("../assets/audio/underwear.mp3"),
     sound_mk: require("../assets/audio/dolen_ves.mp3"),
@@ -1344,7 +1344,6 @@ export const assetsItems = [
     category: "More",
     is_category: "0",
   },
-
   {
     name_en: "Phone",
     name_mk: "Телефон",
@@ -1354,5 +1353,4 @@ export const assetsItems = [
     category: "More",
     is_category: "0",
   },
-
 ];
