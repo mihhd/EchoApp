@@ -24,7 +24,12 @@ function SettingsHeader({ root }) {
         />
       )}
 
-      <IconButton name={"cogs"} onPress={() => console.log("idemo")} />
+      <IconButton
+        name={"cogs"}
+        onPress={() => {
+          navigation.navigate("Settings");
+        }}
+      />
     </View>
   );
 }

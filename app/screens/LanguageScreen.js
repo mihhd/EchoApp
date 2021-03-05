@@ -37,7 +37,7 @@ function LanguageScreen() {
                 style={styles.circle}
                 source={require("../assets/iconblocks/mkdflag.png")}
               />
-              <AppText style={styles.text}>English</AppText>
+              <AppText style={styles.text}>Македонски</AppText>
             </TouchableOpacity>
           </View>
         </View>
@@ -63,6 +63,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-evenly",
     marginTop: 100,
+  },
+  circle: {
+    alignSelf: "center",
   },
 });
 

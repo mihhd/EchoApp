@@ -1,9 +1,8 @@
 export const assetsItems = [
-  
   {
     name_en: "I",
     name_mk: "јас",
-    image: require("../assets/iconblocks/i3.png"),
+    image: require("../assets/iconblocks/i.png"),
     sound_en: require("../assets/audio/i.mp3"),
     sound_mk: require("../assets/audio/jas.mp3"),
     category: "Home",
@@ -19,7 +18,7 @@ export const assetsItems = [
     category: "Home",
     is_category: "0",
   },
-  
+
   {
     name_en: "No",
     name_mk: "Не",
@@ -29,8 +28,7 @@ export const assetsItems = [
     category: "Home",
     is_category: "0",
   },
-  
-  
+
   {
     name_en: "Want",
     name_mk: "Сакам",
@@ -40,7 +38,7 @@ export const assetsItems = [
     category: "Home",
     is_category: "0",
   },
-  
+
   {
     name_en: "To Eat",
     name_mk: "Да јадам",
@@ -50,7 +48,7 @@ export const assetsItems = [
     category: "Home",
     is_category: "1",
   },
-  
+
   {
     name_en: "To Drink",
     name_mk: "Да пијам",
@@ -72,7 +70,7 @@ export const assetsItems = [
   },
 
   {
-    name_en: "To play",
+    name_en: "To Play",
     name_mk: "Да играм",
     image: require("../assets/iconblocks/to_play.png"),
     sound_en: require("../assets/audio/to_play.mp3"),
@@ -80,7 +78,7 @@ export const assetsItems = [
     category: "Home",
     is_category: "1",
   },
-  
+
   {
     name_en: "Feel",
     name_mk: "Се чувствувам",
@@ -90,8 +88,8 @@ export const assetsItems = [
     category: "Home",
     is_category: "1",
   },
-  
-    {
+
+  {
     name_en: "Hi",
     name_mk: "Здраво",
     image: require("../assets/iconblocks/hi.png"),
@@ -120,7 +118,7 @@ export const assetsItems = [
     category: "Home",
     is_category: "0",
   },
-  
+
   {
     name_en: "You",
     name_mk: "Ти",
@@ -130,7 +128,7 @@ export const assetsItems = [
     category: "Home",
     is_category: "0",
   },
-  
+
   {
     name_en: "Body Parts",
     name_mk: "Делови од Телото",
@@ -191,16 +189,16 @@ export const assetsItems = [
     is_category: "1",
   },
 
- // {
- //   name_en: "Numbers",
- //   name_mk: "",
-//    image: require("../assets/iconblocks/numbers.png"),
-//    sound_en: null,
- //   sound_mk: null,
-//    category: "Home",
-//    is_category: "1",
-//  },
-  
+  // {
+  //   name_en: "Numbers",
+  //   name_mk: "",
+  //    image: require("../assets/iconblocks/numbers.png"),
+  //    sound_en: null,
+  //   sound_mk: null,
+  //    category: "Home",
+  //    is_category: "1",
+  //  },
+
   {
     name_en: "More",
     name_mk: "Повеќе",
@@ -210,7 +208,6 @@ export const assetsItems = [
     category: "Home",
     is_category: "1",
   },
-
 
   {
     name_en: "Food",
@@ -261,7 +258,7 @@ export const assetsItems = [
     category: "To Eat",
     is_category: "0",
   },
-  
+
   {
     name_en: "Apple",
     name_mk: "Јаболко",
@@ -271,13 +268,13 @@ export const assetsItems = [
     category: "To Eat",
     is_category: "0",
   },
-  
+
   {
     name_en: "Banana",
     name_mk: "Банана",
     image: require("../assets/iconblocks/banana.png"),
     sound_en: require("../assets/audio/banana.mp3"),
-    sound_mk: require("../assets/audio/bananamk.mp3"),
+    sound_mk: require("../assets/audio/banana.mp3"),
     category: "To Eat",
     is_category: "0",
   },
@@ -291,7 +288,7 @@ export const assetsItems = [
     category: "To Eat",
     is_category: "0",
   },
-  
+
   {
     name_en: "Bread",
     name_mk: "Леб",
@@ -331,7 +328,7 @@ export const assetsItems = [
     category: "To Eat",
     is_category: "0",
   },
-  
+
   {
     name_en: "Cherry",
     name_mk: "Цреша",
@@ -377,20 +374,20 @@ export const assetsItems = [
     name_mk: "Крставица",
     image: require("../assets/iconblocks/cucumber.png"),
     sound_en: require("../assets/audio/cucumber.mp3"),
-    sound_mk: require("../assets/audio/krstavica.mp3"),
+    sound_mk: require("../assets/audio/krastavica.mp3"),
     category: "To Eat",
     is_category: "0",
   },
 
-  {
-    name_en: "Grape",
-    name_mk: "Грозје",
-    image: require("../assets/iconblocks/grape.png"),
-    sound_en: require("../assets/audio/grape.mp3"),
-    sound_mk: require("../assets/audio/grozje.mp3"),
-    category: "To Eat",
-    is_category: "0",
-  },
+  // {
+  //   name_en: "Grape",
+  //   name_mk: "Грозје",
+  //   image: require("../assets/iconblocks/grape.png"),
+  //   sound_en: require("../assets/audio/grape.mp3"),
+  //   sound_mk: require("../assets/audio/grozje.mp3"),
+  //   category: "To Eat",
+  //   is_category: "0",
+  // },
 
   {
     name_en: "Kiwi",
@@ -421,7 +418,7 @@ export const assetsItems = [
     category: "To Eat",
     is_category: "0",
   },
-  
+
   {
     name_en: "Orange",
     name_mk: "Портокал",
@@ -441,7 +438,7 @@ export const assetsItems = [
     category: "To Eat",
     is_category: "0",
   },
-  
+
   {
     name_en: "Pear",
     name_mk: "Круша",
@@ -491,7 +488,7 @@ export const assetsItems = [
     category: "To Eat",
     is_category: "0",
   },
-  
+
   {
     name_en: "Tomato",
     name_mk: "Домат",
@@ -650,8 +647,7 @@ export const assetsItems = [
     sound_mk: require("../assets/audio/slozuvalka.mp3"),
     category: "To Play",
     is_category: "0",
-  },  
-
+  },
 
   {
     name_en: "Computer",
@@ -671,7 +667,7 @@ export const assetsItems = [
     sound_mk: require("../assets/audio/videoigra.mp3"),
     category: "To Play",
     is_category: "0",
-  },  
+  },
 
   {
     name_en: "Tablet",
@@ -817,7 +813,7 @@ export const assetsItems = [
     name_en: "Exercise",
     name_mk: "Да вежбам",
     image: require("../assets/iconblocks/exercise.png"),
-    sound_en: require("../assets/audio/excercise.mp3"),
+    sound_en: require("../assets/audio/exercise.mp3"),
     sound_mk: require("../assets/audio/da_vezbam.mp3"),
     category: "To Go",
     is_category: "0",
@@ -1052,7 +1048,7 @@ export const assetsItems = [
     category: "Clothing",
     is_category: "0",
   },
-  
+
   {
     name_en: "Pants",
     name_mk: "Пантолони",
@@ -1068,7 +1064,7 @@ export const assetsItems = [
     name_mk: "Шорцеви",
     image: require("../assets/iconblocks/shorts.png"),
     sound_en: require("../assets/audio/shorts.mp3"),
-    sound_mk: require("../assets/audio/shorcevi.mp3"),
+    sound_mk: require("../assets/audio/sorcevi.mp3"),
     category: "Clothing",
     is_category: "0",
   },
@@ -1103,7 +1099,6 @@ export const assetsItems = [
     is_category: "0",
   },
 
-
   {
     name_en: "Gloves",
     name_mk: "Ракавици",
@@ -1133,7 +1128,6 @@ export const assetsItems = [
     category: "Clothing",
     is_category: "0",
   },
-
 
   {
     name_en: "Park",
@@ -1168,7 +1162,7 @@ export const assetsItems = [
   {
     name_en: "Run",
     name_mk: "Да трчам",
-    image: require("../assets/iconblocks/rungril.png"),
+    image: require("../assets/iconblocks/rungirl.png"),
     sound_en: require("../assets/audio/run.mp3"),
     sound_mk: require("../assets/audio/da_trcam.mp3"),
     category: "Verbs",
@@ -1209,7 +1203,7 @@ export const assetsItems = [
     name_en: "Walk",
     name_mk: "Да пешачам",
     image: require("../assets/iconblocks/to_go.png"),
-    sound_en: require("../assets/audio/to_walk.mp3"),
+    sound_en: require("../assets/audio/to_go.mp3"),
     sound_mk: require("../assets/audio/da_pesacam.mp3"),
     category: "Verbs",
     is_category: "0",

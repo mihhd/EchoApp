@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { View, TouchableOpacity, StyleSheet, Image, Alert } from "react-native";
 import * as Yup from "yup";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
@@ -16,7 +16,7 @@ import AudioBar from "../components/AudioBar";
 import CustomModal from "../components/CustomModal";
 import { useNavigation } from "@react-navigation/native";
 import { useEffect } from "react/cjs/react.development";
-import { Value } from "react-native-reanimated";
+import AppContext from "../context/appContext";
 
 const db = SQLite.openDatabase("echoDB.db");
 
@@ -34,6 +34,7 @@ function AddEditScreen({ route }) {
   const [uri, setUri] = useState();
 
   const navigation = useNavigation();
+  const appContext = useContext(AppContext);
 
   useEffect(() => {
     if (typeof route.params.item !== "undefined") {
@@ -136,8 +137,8 @@ function AddEditScreen({ route }) {
   }
 
   function navigate() {
-    if (route.params.root === "Home") {
-      navigation.goBack("Home");
+    if (!!!+route.params.isCategory) {
+      navigation.goBack();
     } else {
       var arr = getCategoryItems();
 
@@ -151,8 +152,9 @@ function AddEditScreen({ route }) {
     return new Promise((resolve, reject) => {
       db.transaction((tx) => {
         tx.executeSql(
-          "insert into items (name, image, sound, category, is_category) values (?, ?, ?, ?, ?)",
+          "insert into items (name_en, name_mk, image, sound_en, category, is_category) values (?, ?, ?, ?, ?, ?)",
           [
+            name,
             name,
             newImageLocation,
             newSoundLocation,
@@ -174,9 +176,10 @@ function AddEditScreen({ route }) {
 
   function updateItem(id, name, newImageLocation, newSoundLocation) {
     return new Promise((resolve, reject) => {
+      var sqlQuery = `UPDATE items SET name_${appContext.settings.language} = ?, image = ?, sound_${appContext.settings.language} = ?, category = ? WHERE id = ?`;
       db.transaction((tx) => {
         tx.executeSql(
-          "UPDATE items SET name = ?, image = ?, sound = ?, category = ? WHERE id = ?",
+          sqlQuery,
           [name, newImageLocation, newSoundLocation, selectedValue, id],
           () => {
             console.log("Update success");
@@ -240,7 +243,7 @@ function AddEditScreen({ route }) {
             style={styles.text}
           />
         </View>
-        {!route.params.is_category && (
+        {!!!+route.params.isCategory && (
           <View style={styles.marginBottom}>
             <AppText style={styles.text}>Category</AppText>
 

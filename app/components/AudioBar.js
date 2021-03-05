@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { View, StyleSheet, TouchableOpacity } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { Audio } from "expo-av";
@@ -7,12 +7,16 @@ import { assetsItems } from "../config/assetsItems";
 
 import AppText from "./AppText";
 import colors from "../config/colors";
+import AppContext from "../context/appContext";
 
 function AudioBar({ category, uri, setUri, item = null }) {
   category = category;
   const [recording, setRecording] = useState();
   const [isStopwatchStart, setIsStopwatchStart] = useState(false);
   const [resetStopwatch, setResetStopwatch] = useState(false);
+  const [noSound, setNoSound] = useState(false);
+
+  const appContext = useContext(AppContext);
 
   async function playSound() {
     if (uri === undefined) {
@@ -23,11 +27,19 @@ function AudioBar({ category, uri, setUri, item = null }) {
 
     try {
       if (item !== null) {
-        await soundObject.loadAsync(
-          uri.startsWith("file")
-            ? { uri: uri }
-            : assetsItems.find((i) => i.name === item.name).sound
-        );
+        if (appContext.settings.language === "en") {
+          await soundObject.loadAsync(
+            uri.startsWith("file")
+              ? { uri: uri }
+              : assetsItems.find((i) => i.name_en === item.name_en).sound_en
+          );
+        } else {
+          await soundObject.loadAsync(
+            uri.startsWith("file")
+              ? { uri: uri }
+              : assetsItems.find((i) => i.name_mk === item.name_mk).sound_mk
+          );
+        }
       } else {
         await soundObject.loadAsync({ uri });
       }
@@ -89,25 +101,30 @@ function AudioBar({ category, uri, setUri, item = null }) {
           />
           <AppText style={styles.audioText}>Play</AppText>
         </TouchableOpacity>
+        {!noSound && (
+          <TouchableOpacity
+            onPress={startRecording}
+            disabled={recording}
+            style={{ alignItems: "center" }}
+          >
+            <MaterialCommunityIcons
+              name="microphone"
+              size={40}
+              color={recording ? colors.danger : colors.dark}
+            />
+            <AppText style={styles.audioText}>Record</AppText>
+          </TouchableOpacity>
+        )}
 
-        <TouchableOpacity
-          onPress={startRecording}
-          disabled={recording}
-          style={{ alignItems: "center" }}
-        >
-          <MaterialCommunityIcons
-            name="microphone"
-            size={40}
-            color={recording ? colors.danger : colors.dark}
-          />
-          <AppText style={styles.audioText}>Record</AppText>
-        </TouchableOpacity>
-        {category ? (
-          <TouchableOpacity style={{ alignItems: "center" }}>
+        {!!+category ? (
+          <TouchableOpacity
+            style={{ alignItems: "center" }}
+            onPress={() => setNoSound(!noSound)}
+          >
             <MaterialCommunityIcons
               name="volume-off"
               size={40}
-              color={colors.dark}
+              color={noSound ? colors.secondary : colors.dark}
             />
             <AppText style={styles.audioText}>Audio</AppText>
           </TouchableOpacity>

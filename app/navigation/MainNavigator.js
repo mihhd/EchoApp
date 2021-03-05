@@ -7,6 +7,7 @@ import CategoryScreen from "../screens/CategoryScreen";
 import AddEditScreen from "../screens/AddEditScreen";
 import colors from "../config/colors";
 import MainContext from "../context/mainContext";
+import SettingsNavigator from "./SettingsNavigator";
 
 const Stack = createStackNavigator();
 const APPBAR_HEIGHT = Platform.select({
@@ -36,6 +37,11 @@ function MainNavigator() {
         />
         <Stack.Screen name="Category" component={CategoryScreen} />
         <Stack.Screen name="AddEdit" component={AddEditScreen} />
+        <Stack.Screen
+          name="Settings"
+          options={{ headerShown: false }}
+          component={SettingsNavigator}
+        />
       </Stack.Navigator>
     </MainContext.Provider>
   );

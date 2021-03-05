@@ -9,14 +9,18 @@ import { useNavigation } from "@react-navigation/native";
 
 const db = SQLite.openDatabase("echoDB.db");
 
-const EditModal = ({ setModalVisible, modalVisible, itemToEdit }) => {
+const EditModal = ({ setModalVisible, modalVisible, itemToEdit, language }) => {
   const navigation = useNavigation();
   const [itemName, setItemName] = useState("");
 
   useEffect(() => {
     typeof itemToEdit === "undefined"
       ? setItemName("")
-      : setItemName('"' + itemToEdit.name + '"');
+      : setItemName(
+          language === "en"
+            ? '"' + itemToEdit.name_en + '"'
+            : '"' + itemToEdit.name_mk + '"'
+        );
   }, [itemToEdit]);
 
   function editItem() {

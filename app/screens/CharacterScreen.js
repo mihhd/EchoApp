@@ -1,12 +1,5 @@
 import React, { useState } from "react";
-import {
-  View,
-  StyleSheet,
-  FlatList,
-  TouchableOpacity,
-  Modal,
-  Button,
-} from "react-native";
+import { View, StyleSheet, FlatList, TouchableOpacity } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 import AppText from "../components/AppText";
@@ -16,6 +9,7 @@ import Screen from "../components/Screen";
 import Character from "../components/Character";
 import CustomModal from "../components/CustomModal";
 import { useContext } from "react";
+import * as SQLite from "expo-sqlite";
 import AppContext from "../context/appContext";
 
 const characters = [
@@ -45,21 +39,60 @@ const characters = [
   },
 ];
 
+const db = SQLite.openDatabase("echoDB.db");
+
 function CharacterScreen({ route }) {
-  const appContext = useContext(AppContext0);
+  const appContext = useContext(AppContext);
 
   const [modalVisible, setModalVisible] = useState(false);
   const [image, setImage] = useState(null);
 
-  function chooseCharacter(image) {
-    appContext.setSettings({
-      language: route.params.language,
-      character: image,
-      pin: "0000",
-      first_fun: 0,
-    });
+  updateCharacter = async (img) => {
+    return new Promise((resolve, reject) =>
+      db.transaction((tx) => {
+        tx.executeSql(
+          "update items set image = ? where id = 1",
+          [img],
+          () => resolve(),
+          (_, error) => reject(error)
+        );
+      })
+    );
+  };
 
-    console.log(appContext.settings);
+  insertSettings = async (img) => {
+    return new Promise((resolve, reject) =>
+      db.transaction((tx) => {
+        tx.executeSql(
+          "insert into settings (language, character, pin, show_name, first_run) values (?, ?, ?, ?, ?)",
+          [route.params.language, img, "0000", 1, 0]
+        );
+        tx.executeSql(
+          "select * from settings",
+          [],
+          (_, { rows }) => {
+            resolve(rows._array[0]);
+          },
+          (_, _error) => {
+            console.log(_error);
+            reject;
+          }
+        );
+      })
+    );
+  };
+
+  function chooseCharacter(img) {
+    const upDate = updateCharacter(img);
+    const insert = insertSettings(img);
+    Promise.all([upDate, insert])
+      .then((settings) => {
+        appContext.setSettings(settings[1]);
+        appContext.setFirstRun(false);
+      })
+      .catch((error) => {
+        console.error(error.message);
+      });
   }
 
   return (

@@ -19,9 +19,6 @@ function CategoryScreen({ route }) {
   const [modalVisible, setModalVisible] = useState(false);
   const [itemToEdit, setItemToEdit] = useState();
 
-  // React.useEffect(() => {
-  // }, [route.params.items]);
-
   React.useLayoutEffect(() => {
     initialHeader();
   }, []);

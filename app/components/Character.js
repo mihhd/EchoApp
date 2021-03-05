@@ -3,8 +3,15 @@ import { View, StyleSheet, TouchableOpacity, Image } from "react-native";
 import colors from "../config/colors";
 
 function Character({ image, chooseCharacter }) {
+  function imageType() {
+    if (typeof image === "object") {
+      chooseCharacter(image.uri);
+    } else {
+      chooseCharacter(image);
+    }
+  }
   return (
-    <TouchableOpacity onPress={() => chooseCharacter(image)}>
+    <TouchableOpacity onPress={() => imageType()}>
       <View style={styles.container}>
         <Image source={image} style={styles.image} />
       </View>

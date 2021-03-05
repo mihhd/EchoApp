@@ -3,7 +3,6 @@ import { View, StyleSheet } from "react-native";
 import { Picker } from "@react-native-picker/picker";
 import colors from "../config/colors";
 import { useEffect } from "react";
-import { set } from "react-native-reanimated";
 import * as SQLite from "expo-sqlite";
 
 const db = SQLite.openDatabase("echoDB.db");
@@ -26,9 +25,9 @@ function Dropdown({ selectedValue, setSelectedValue, root }) {
         [],
         (_, { rows: { _array } }) => {
           var newArr = _array.map((i) => ({
-            key: i.name,
-            value: i.name,
-            label: i.name,
+            key: i.name_en,
+            value: i.name_en,
+            label: i.name_en,
           }));
           newArr.splice(0, 0, { key: "Home", value: "Home", label: "Home" });
           setItems(newArr);
@@ -44,6 +43,7 @@ function Dropdown({ selectedValue, setSelectedValue, root }) {
         mode={"dropdown"}
         selectedValue={selectedValue}
         style={styles.dropdown}
+        itemStyle={{ height: 44 }}
         onValueChange={(itemValue) => setSelectedValue(itemValue)}
       >
         {items.map((item) => (
