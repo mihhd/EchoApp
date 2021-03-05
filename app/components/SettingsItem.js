@@ -1,8 +1,7 @@
 import React from "react";
-import { View, StyleSheet } from "react-native";
+import { View, StyleSheet, Text } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import colors from "../config/colors";
-import AppText from "./AppText";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { useNavigation } from "@react-navigation/native";
 
@@ -21,7 +20,7 @@ function SettingsItem({ name, title, screen }) {
         color={colors.white}
         style={styles.icon}
       />
-      <AppText style={styles.text}>{title}</AppText>
+      <Text style={styles.text}>{title}</Text>
       <View style={styles.right}>
         <MaterialCommunityIcons
           name="chevron-right"

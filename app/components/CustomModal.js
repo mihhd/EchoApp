@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import {
   Modal,
   StyleSheet,
@@ -6,12 +6,12 @@ import {
   Pressable,
   View,
   TouchableOpacity,
+  Text,
 } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
 
 import colors from "../config/colors";
-import AppText from "./AppText";
 
 const CustomModal = ({ setModalVisible, modalVisible, setImage }) => {
   //select image from galery
@@ -78,7 +78,7 @@ const CustomModal = ({ setModalVisible, modalVisible, setImage }) => {
                   />
                 </View>
 
-                <AppText style={styles.text}>Camera</AppText>
+                <Text style={styles.text}>Camera</Text>
               </View>
 
               <View>
@@ -91,7 +91,7 @@ const CustomModal = ({ setModalVisible, modalVisible, setImage }) => {
                     />
                   </View>
                 </TouchableOpacity>
-                <AppText style={styles.text}>Galery</AppText>
+                <Text style={styles.text}>Galery</Text>
               </View>
             </View>
           </View>

@@ -1,22 +1,40 @@
-import React, { useContext, useState } from "react";
-import { View, StyleSheet, TouchableOpacity } from "react-native";
+import React, { useContext, useEffect, useState } from "react";
+import { View, StyleSheet, TouchableOpacity, Text } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { Audio } from "expo-av";
 import { Stopwatch } from "react-native-stopwatch-timer";
 import { assetsItems } from "../config/assetsItems";
 
-import AppText from "./AppText";
 import colors from "../config/colors";
 import AppContext from "../context/appContext";
 
 function AudioBar({ category, uri, setUri, item = null }) {
+  //set content language; this approach should be changed in the future
+  const appContext = useContext(AppContext);
+
+  const [textPlay, setTextPlay] = useState("");
+  const [textRecord, setTextRecord] = useState("");
+  const [textAudio, setTextAudio] = useState("");
+
+  useEffect(() => {
+    if (appContext.settings.language === "mk") {
+      setTextPlay("Слушни");
+      setTextRecord("Сними");
+      setTextAudio("Звук");
+    } else {
+      setTextPlay("Play");
+      setTextRecord("Record");
+      setTextAudio("Audio");
+    }
+  }, [appContext.settings.language]);
+
+  /////////////////////////////////////////////////////////////
+
   category = category;
   const [recording, setRecording] = useState();
   const [isStopwatchStart, setIsStopwatchStart] = useState(false);
   const [resetStopwatch, setResetStopwatch] = useState(false);
   const [noSound, setNoSound] = useState(false);
-
-  const appContext = useContext(AppContext);
 
   async function playSound() {
     if (uri === undefined) {
@@ -99,7 +117,7 @@ function AudioBar({ category, uri, setUri, item = null }) {
             size={40}
             color={uri ? colors.secondary : colors.dark}
           />
-          <AppText style={styles.audioText}>Play</AppText>
+          <Text style={styles.audioText}>{textPlay}</Text>
         </TouchableOpacity>
         {!noSound && (
           <TouchableOpacity
@@ -112,7 +130,7 @@ function AudioBar({ category, uri, setUri, item = null }) {
               size={40}
               color={recording ? colors.danger : colors.dark}
             />
-            <AppText style={styles.audioText}>Record</AppText>
+            <Text style={styles.audioText}>{textRecord}</Text>
           </TouchableOpacity>
         )}
 
@@ -126,7 +144,7 @@ function AudioBar({ category, uri, setUri, item = null }) {
               size={40}
               color={noSound ? colors.secondary : colors.dark}
             />
-            <AppText style={styles.audioText}>Audio</AppText>
+            <Text style={styles.audioText}>{textAudio}</Text>
           </TouchableOpacity>
         ) : (
           <TouchableOpacity style={{ width: 50 }}></TouchableOpacity>

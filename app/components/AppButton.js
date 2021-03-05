@@ -1,13 +1,12 @@
 import React from "react";
-import { StyleSheet, View } from "react-native";
+import { StyleSheet, Text } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import colors from "../config/colors";
-import AppText from "./AppText";
 
 function AppButton({ title, onPress, fontSize }) {
   return (
     <TouchableOpacity style={styles.submit} onPress={onPress}>
-      <AppText style={[styles.text, fontSize]}>{title}</AppText>
+      <Text style={[styles.text, fontSize]}>{title}</Text>
     </TouchableOpacity>
   );
 }

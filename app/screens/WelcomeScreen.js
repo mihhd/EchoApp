@@ -1,7 +1,6 @@
 import React from "react";
-import { View, StyleSheet, Image } from "react-native";
+import { View, StyleSheet, Image, Text } from "react-native";
 
-import AppText from "../components/AppText";
 import Screen from "../components/Screen";
 import colors from "../config/colors";
 
@@ -9,8 +8,8 @@ function WelcomeScreen(props) {
   return (
     <Screen>
       <View style={styles.container}>
-        <AppText style={styles.title}>Hello</AppText>
-        <AppText style={styles.subTitle}>Welcome to Echo</AppText>
+        <Text style={styles.title}>Hello</Text>
+        <Text style={styles.subTitle}>Welcome to Echo</Text>
         <Image style={styles.image} source={require("../assets/welcome.png")} />
       </View>
     </Screen>

@@ -1,15 +1,37 @@
 import { useNavigation } from "@react-navigation/native";
-import React, { useState } from "react";
-import { View, StyleSheet } from "react-native";
-import AppText from "../AppText";
+import React, { useContext, useEffect, useState } from "react";
+import { View, StyleSheet, Text } from "react-native";
 import Screen from "../Screen";
 import SettingsBackButton from "./SettingsBackButton";
-import { Picker } from "@react-native-picker/picker";
 import colors from "../../config/colors";
+import SettingsDropdown from "./SettingsDropdown";
+import AppContext from "../../context/appContext";
 
-function LayoutSettings(props) {
+const options = [
+  { key: 1, label: "Yes", value: 1 },
+  { key: 0, label: "No", value: 0 },
+];
+
+function LayoutSettings() {
+  const appContext = useContext(AppContext);
+
+  const [textName, setTextName] = useState("");
+
+  useEffect(() => {
+    if (appContext.settings.language === "mk") {
+      setTextName("Име под Симболот");
+    } else {
+      setTextName("Name below Symbol");
+    }
+  }, [appContext.settings.language]);
+
   const navigation = useNavigation();
-  const [selectedValue, setSelectedValue] = useState("Yes");
+
+  const [selectedValue, setSelectedValue] = useState(
+    appContext.settings.show_name
+  );
+
+  useEffect(() => {}, [selectedValue]);
 
   React.useLayoutEffect(() => {
     navigation.setOptions({
@@ -25,19 +47,12 @@ function LayoutSettings(props) {
     <Screen>
       <View style={styles.container}>
         <View style={styles.row}>
-          <AppText style={styles.text}>Name below Symbol</AppText>
-          <View style={styles.picker}>
-            <Picker
-              mode={"dropdown"}
-              selectedValue={selectedValue}
-              style={styles.dropdown}
-              itemStyle={{ height: 44 }}
-              onValueChange={(itemValue) => setSelectedValue(itemValue)}
-            >
-              <Picker.Item label="Yes" value="yes" />
-              <Picker.Item label="No" value="no" />
-            </Picker>
-          </View>
+          <Text style={styles.text}>{textName}</Text>
+          <SettingsDropdown
+            options={options}
+            selectedValue={selectedValue}
+            setSelectedValue={setSelectedValue}
+          />
         </View>
       </View>
     </Screen>

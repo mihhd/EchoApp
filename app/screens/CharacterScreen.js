@@ -1,8 +1,13 @@
 import React, { useState } from "react";
-import { View, StyleSheet, FlatList, TouchableOpacity } from "react-native";
+import {
+  View,
+  StyleSheet,
+  FlatList,
+  TouchableOpacity,
+  Text,
+} from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 
-import AppText from "../components/AppText";
 import Separator from "../components/Separator";
 import colors from "../config/colors";
 import Screen from "../components/Screen";
@@ -11,6 +16,7 @@ import CustomModal from "../components/CustomModal";
 import { useContext } from "react";
 import * as SQLite from "expo-sqlite";
 import AppContext from "../context/appContext";
+import { useEffect } from "react/cjs/react.development";
 
 const characters = [
   {
@@ -43,6 +49,19 @@ const db = SQLite.openDatabase("echoDB.db");
 
 function CharacterScreen({ route }) {
   const appContext = useContext(AppContext);
+
+  const [textCharacter, setTextCharacter] = useState("");
+  const [textOwn, setTextOwn] = useState("");
+
+  useEffect(() => {
+    if (route.params.language === "mk") {
+      setTextCharacter("Изберете карактер");
+      setTextOwn("Изберете ваш");
+    } else {
+      setTextCharacter("Choose a Character");
+      setTextOwn("Make your own");
+    }
+  }, [appContext.language]);
 
   const [modalVisible, setModalVisible] = useState(false);
   const [image, setImage] = useState(null);
@@ -99,7 +118,7 @@ function CharacterScreen({ route }) {
     <Screen>
       <View style={styles.container}>
         <View style={styles.center}>
-          <AppText style={styles.title}>Choose a Character</AppText>
+          <Text style={styles.title}>{textCharacter}</Text>
           <Separator />
         </View>
 
@@ -129,7 +148,7 @@ function CharacterScreen({ route }) {
             style={styles.button}
             onPress={() => setModalVisible(true)}
           >
-            <AppText style={styles.buttonText}>Make your own</AppText>
+            <Text style={styles.buttonText}>{textOwn}</Text>
             <View style={styles.icon}>
               <MaterialCommunityIcons
                 name="plus"

@@ -1,5 +1,12 @@
 import React, { useContext, useState } from "react";
-import { View, TouchableOpacity, StyleSheet, Image, Alert } from "react-native";
+import {
+  View,
+  TouchableOpacity,
+  StyleSheet,
+  Image,
+  Alert,
+  Text,
+} from "react-native";
 import * as Yup from "yup";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import * as SQLite from "expo-sqlite";
@@ -11,7 +18,6 @@ import AppFormField from "../components/forms/AppFormField";
 import SubmitButton from "../components/forms/SubmitButton";
 import Screen from "../components/Screen";
 import Dropdown from "../components/Dropdown";
-import AppText from "../components/AppText";
 import AudioBar from "../components/AudioBar";
 import CustomModal from "../components/CustomModal";
 import { useNavigation } from "@react-navigation/native";
@@ -25,16 +31,35 @@ const soundsDir = FileSystem.documentDirectory + "sounds/";
 
 const validationSchema = Yup.object().shape({
   name: Yup.string().required().label("Name"),
-  // password: Yup.string().required().min(4).label("Password"),
 });
+
 function AddEditScreen({ route }) {
+  //set content language; this approach should be changed in the future
+  const appContext = useContext(AppContext);
+
+  const [textName, setTextName] = useState("");
+  const [textCategory, setTextCategory] = useState("");
+  const [textAudio, setTextAudio] = useState("");
+
+  useEffect(() => {
+    if (appContext.settings.language === "mk") {
+      setTextName("Име");
+      setTextCategory("Категорија");
+      setTextAudio("Звук");
+    } else {
+      setTextName("Name");
+      setTextCategory("Category");
+      setTextAudio("Audio");
+    }
+  }, [appContext.settings.language]);
+
+  /////////////////////////////////////////////////////////////
+
   const [modalVisible, setModalVisible] = useState(false);
   const [image, setImage] = useState("");
   const [selectedValue, setSelectedValue] = useState(route.params.root);
   const [uri, setUri] = useState();
-
   const navigation = useNavigation();
-  const appContext = useContext(AppContext);
 
   useEffect(() => {
     if (typeof route.params.item !== "undefined") {
@@ -234,7 +259,7 @@ function AddEditScreen({ route }) {
         validationSchema={validationSchema}
       >
         <View style={styles.marginBottom}>
-          <AppText style={styles.text}>Name</AppText>
+          <Text style={styles.text}>{textName}</Text>
           <AppFormField
             autoCapitalize="none"
             autoCorrect={false}
@@ -245,17 +270,18 @@ function AddEditScreen({ route }) {
         </View>
         {!!!+route.params.isCategory && (
           <View style={styles.marginBottom}>
-            <AppText style={styles.text}>Category</AppText>
+            <Text style={styles.text}>{textCategory}</Text>
 
             <Dropdown
               root={route.params.root}
               selectedValue={selectedValue}
               setSelectedValue={setSelectedValue}
+              language={appContext.settings.language}
             />
           </View>
         )}
         <View style={styles.marginBottom}>
-          <AppText style={styles.text}>Audio</AppText>
+          <Text style={styles.text}>{textAudio}</Text>
           <AudioBar
             category={route.params.isCategory}
             uri={uri}

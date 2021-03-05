@@ -1,40 +1,68 @@
-import React from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { View, StyleSheet } from "react-native";
 import colors from "../../config/colors";
 import Screen from "../Screen";
 import SettingsItem from "../SettingsItem";
+import AppContext from "../../context/appContext";
 
-function HomeSettings(props) {
+function HomeSettings() {
+  //set content language; this approach should be changed in the future
+  const appContext = useContext(AppContext);
+
+  const [textGeneral, setTextGeneral] = useState("");
+  const [textLayout, setTextLayout] = useState("");
+  const [textSupport, setextSupport] = useState("");
+  const [textAbout, setTextAbout] = useState("");
+  const [textDonate, setTextDonate] = useState("");
+
+  useEffect(() => {
+    if (appContext.settings.language === "mk") {
+      setTextGeneral("Општо");
+      setTextLayout("Изглед");
+      setextSupport("Поддршка");
+      setTextAbout("За нас");
+      setTextDonate("Донации");
+    } else {
+      setTextGeneral("General");
+      setTextLayout("View and Layout Settings");
+      setextSupport("Support");
+      setTextAbout("About");
+      setTextDonate("Donate");
+    }
+  }, [appContext.settings.language]);
+
+  /////////////////////////////////////////////////////////////
+
   return (
     <Screen>
       <View style={styles.container}>
         <SettingsItem
           name={"wrench-outline"}
-          title={"General"}
+          title={textGeneral}
           screen={"General"}
         />
 
         <SettingsItem
           name={"palette-outline"}
-          title={"View and Layout Settings"}
+          title={textLayout}
           screen={"Layout"}
         />
 
         <SettingsItem
           name={"account-multiple-outline"}
-          title={"Support"}
+          title={textSupport}
           screen={"Support"}
         />
 
         <SettingsItem
           name={"information-outline"}
-          title={"About"}
+          title={textAbout}
           screen={"About"}
         />
 
         <SettingsItem
           name={"currency-usd"}
-          title={"Donate"}
+          title={textDonate}
           screen={"Donate"}
         />
       </View>

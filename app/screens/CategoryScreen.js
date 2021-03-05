@@ -10,8 +10,10 @@ import SettingsHeader from "../components/SettingsHeader";
 import colors from "../config/colors";
 import MainContext from "../context/mainContext";
 import EditModal from "../components/EditModal";
+import AppContext from "../context/appContext";
 
 function CategoryScreen({ route }) {
+  const appContext = useContext(AppContext);
   const mainContext = useContext(MainContext);
   const navigation = useNavigation();
 
@@ -101,6 +103,7 @@ function CategoryScreen({ route }) {
         itemToEdit={itemToEdit}
         modalVisible={modalVisible}
         setModalVisible={setModalVisible}
+        language={appContext.settings.language}
       />
     </Screen>
   );

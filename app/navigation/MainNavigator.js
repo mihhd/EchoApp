@@ -36,7 +36,11 @@ function MainNavigator() {
           component={HomeScreen}
         />
         <Stack.Screen name="Category" component={CategoryScreen} />
-        <Stack.Screen name="AddEdit" component={AddEditScreen} />
+        <Stack.Screen
+          options={{ title: "" }}
+          name="AddEdit"
+          component={AddEditScreen}
+        />
         <Stack.Screen
           name="Settings"
           options={{ headerShown: false }}

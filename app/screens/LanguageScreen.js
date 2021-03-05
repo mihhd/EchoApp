@@ -1,7 +1,6 @@
 import React from "react";
-import { View, StyleSheet, Image } from "react-native";
+import { View, StyleSheet, Image, Text } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
-import AppText from "../components/AppText";
 import Screen from "../components/Screen";
 import Separator from "../components/Separator";
 import colors from "../config/colors";
@@ -18,9 +17,9 @@ function LanguageScreen() {
   return (
     <Screen>
       <View style={styles.container}>
-        <AppText style={styles.text}>Choose a Language</AppText>
+        <Text style={styles.text}>Choose a Language</Text>
         <Separator />
-        <AppText style={styles.text}>Одбери Јазик</AppText>
+        <Text style={styles.text}>Одбери Јазик</Text>
         <View style={styles.languages}>
           <View style={{ alignItems: "center", justifyContent: "center" }}>
             <TouchableOpacity onPress={() => selectLanguage("en")}>
@@ -28,7 +27,7 @@ function LanguageScreen() {
                 style={styles.circle}
                 source={require("../assets/iconblocks/enflag.png")}
               />
-              <AppText style={styles.text}>English</AppText>
+              <Text style={styles.text}>English</Text>
             </TouchableOpacity>
           </View>
           <View style={{ alignItems: "center", justifyContent: "center" }}>
@@ -37,7 +36,7 @@ function LanguageScreen() {
                 style={styles.circle}
                 source={require("../assets/iconblocks/mkdflag.png")}
               />
-              <AppText style={styles.text}>Македонски</AppText>
+              <Text style={styles.text}>Македонски</Text>
             </TouchableOpacity>
           </View>
         </View>

@@ -7,7 +7,7 @@ import * as SQLite from "expo-sqlite";
 
 const db = SQLite.openDatabase("echoDB.db");
 
-function Dropdown({ selectedValue, setSelectedValue, root }) {
+function Dropdown({ selectedValue, setSelectedValue, root, language }) {
   const [items, setItems] = useState([]);
 
   useEffect(() => {
@@ -24,11 +24,20 @@ function Dropdown({ selectedValue, setSelectedValue, root }) {
         `select * from items where is_category='1'`,
         [],
         (_, { rows: { _array } }) => {
-          var newArr = _array.map((i) => ({
-            key: i.name_en,
-            value: i.name_en,
-            label: i.name_en,
-          }));
+          var newArr = [];
+          if (language === "mk") {
+            newArr = _array.map((i) => ({
+              key: i.name_en,
+              value: i.name_en,
+              label: i.name_mk,
+            }));
+          } else {
+            newArr = _array.map((i) => ({
+              key: i.name_en,
+              value: i.name_en,
+              label: i.name_en,
+            }));
+          }
           newArr.splice(0, 0, { key: "Home", value: "Home", label: "Home" });
           setItems(newArr);
         },

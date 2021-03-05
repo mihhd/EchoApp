@@ -1,15 +1,31 @@
 import React, { useEffect, useState } from "react";
-import { Modal, StyleSheet, View, TouchableOpacity, Alert } from "react-native";
+import { Modal, StyleSheet, View, TouchableOpacity, Text } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import * as SQLite from "expo-sqlite";
 
 import colors from "../config/colors";
-import AppText from "./AppText";
 import { useNavigation } from "@react-navigation/native";
 
 const db = SQLite.openDatabase("echoDB.db");
 
 const EditModal = ({ setModalVisible, modalVisible, itemToEdit, language }) => {
+  //set content language; this approach should be changed in the future
+
+  const [textEdit, setTextEdit] = useState("");
+  const [textDelete, setTextDelete] = useState("");
+
+  useEffect(() => {
+    if (language === "mk") {
+      setTextEdit("Измени");
+      setTextDelete("Избриши");
+    } else {
+      setTextEdit("Edit");
+      setTextDelete("Delete");
+    }
+  }, [language]);
+
+  /////////////////////////////////////////////////////////////
+
   const navigation = useNavigation();
   const [itemName, setItemName] = useState("");
 
@@ -62,9 +78,9 @@ const EditModal = ({ setModalVisible, modalVisible, itemToEdit, language }) => {
         >
           <View style={styles.modalView}>
             <View style={[styles.row, { backgroundColor: colors.primary }]}>
-              <AppText style={[styles.text, { color: colors.white }]}>
+              <Text style={[styles.text, { color: colors.white }]}>
                 {itemName}
-              </AppText>
+              </Text>
             </View>
 
             <TouchableOpacity
@@ -83,9 +99,9 @@ const EditModal = ({ setModalVisible, modalVisible, itemToEdit, language }) => {
                 size={28}
                 color={colors.medium}
               />
-              <AppText style={[styles.text, { color: colors.medium }]}>
-                Edit
-              </AppText>
+              <Text style={[styles.text, { color: colors.medium }]}>
+                {textEdit}
+              </Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={[styles.row, { backgroundColor: colors.white }]}
@@ -96,9 +112,9 @@ const EditModal = ({ setModalVisible, modalVisible, itemToEdit, language }) => {
                 size={28}
                 color={colors.danger}
               />
-              <AppText style={[styles.text, { color: colors.danger }]}>
-                Delete
-              </AppText>
+              <Text style={[styles.text, { color: colors.danger }]}>
+                {textDelete}
+              </Text>
             </TouchableOpacity>
           </View>
         </TouchableOpacity>

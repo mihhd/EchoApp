@@ -1,31 +1,52 @@
 import { useNavigation } from "@react-navigation/native";
-import React, { useContext, useState } from "react";
-import { View, StyleSheet } from "react-native";
+import React, { useContext, useEffect, useState } from "react";
+import { View, StyleSheet, Text } from "react-native";
 import { Screen } from "react-native-screens";
 import colors from "../../config/colors";
 import AppContext from "../../context/appContext";
-import AppText from "../AppText";
 import SettingsBackButton from "./SettingsBackButton";
-import { Picker } from "@react-native-picker/picker";
-import AppTextInput from "../AppTextInput";
 import * as SQLite from "expo-sqlite";
+import SettingsDropdown from "./SettingsDropdown";
+import { TextInput } from "react-native-gesture-handler";
 
 const db = SQLite.openDatabase("echoDB.db");
+const languageOptions = [
+  { key: "en", label: "English", value: "en" },
+  { key: "mk", label: "Македонски", value: "mk" },
+];
 
-function GeneralSettings(props) {
-  const navigation = useNavigation();
+function GeneralSettings({ route }) {
   const appContext = useContext(AppContext);
 
-  const [selectedValue, setSelectedValue] = useState("en");
-  const [pin, setPin] = useState();
+  const [textLanguage, setTextLanguage] = useState("");
+  const [textPin, setTextPin] = useState("");
+
+  useEffect(() => {
+    if (appContext.settings.language === "mk") {
+      setTextLanguage("Јазик");
+      setTextPin("Пин");
+    } else {
+      setTextLanguage("Language");
+      setTextPin("Pin");
+    }
+  }, [appContext.settings.language]);
+
+  const navigation = useNavigation();
+  const [selectedLanguage, setSelectedLanguage] = useState(
+    appContext.settings.language
+  );
+  const [pin, setPin] = useState(appContext.settings.pin);
 
   React.useLayoutEffect(() => {
     navigation.setOptions({
-      headerLeft: () => <SettingsBackButton onPress={setGeneralSettings} />,
+      headerLeft: () => (
+        <SettingsBackButton onPress={() => navigation.goBack()} />
+      ),
     });
   }, [navigation]);
 
-  function setGeneralSettings() {
+  function goBackWithCallback() {
+    route.params.callback(selectedLanguage, pin);
     navigation.goBack();
   }
 
@@ -46,30 +67,24 @@ function GeneralSettings(props) {
     <Screen>
       <View style={styles.container}>
         <View style={styles.row}>
-          <AppText style={styles.text}>Language</AppText>
-          <View style={styles.picker}>
-            <Picker
-              mode={"dropdown"}
-              selectedValue={selectedValue}
-              style={styles.dropdown}
-              itemStyle={{ height: 44 }}
-              onValueChange={(itemValue) => setSelectedValue(itemValue)}
-            >
-              <Picker.Item label="English" value="en" />
-              <Picker.Item label="Македонски" value="mk" />
-            </Picker>
-          </View>
+          <Text style={styles.text}>{textLanguage}</Text>
+          <SettingsDropdown
+            options={languageOptions}
+            selectedValue={selectedLanguage}
+            setSelectedValue={setSelectedLanguage}
+          />
         </View>
         <View style={styles.row}>
-          <AppText style={styles.text}>Pin</AppText>
+          <Text style={styles.text}>{textPin}</Text>
           <View style={styles.picker}>
-            <AppTextInput
+            <TextInput
               style={styles.text}
               placeholder={appContext.settings.pin}
               width={"100%"}
               keyboardType={"numeric"}
               maxLength={4}
-            ></AppTextInput>
+              onChangeText={(text) => setPin(text)}
+            ></TextInput>
           </View>
         </View>
       </View>
@@ -97,12 +112,6 @@ const styles = StyleSheet.create({
     width: 150,
     borderWidth: 3,
     borderColor: colors.medium,
-  },
-  dropdown: {
-    width: "100%",
-    borderWidth: 1,
-    color: colors.white,
-    fontSize: 18,
   },
 });
 

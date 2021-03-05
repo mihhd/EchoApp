@@ -1,10 +1,9 @@
 import React, { useContext } from "react";
-import { View, StyleSheet, Image, TouchableOpacity } from "react-native";
+import { View, StyleSheet, Image, TouchableOpacity, Text } from "react-native";
 import { Audio } from "expo-av";
 import * as SQLite from "expo-sqlite";
 
 import colors from "../config/colors";
-import AppText from "./AppText";
 import { useNavigation } from "@react-navigation/native";
 import { assetsItems } from "../config/assetsItems";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
@@ -106,9 +105,9 @@ function Item({ item, setHeaderTitle, editMode, editItem }) {
           }
           style={styles.image}
         />
-        <AppText style={styles.text}>
+        <Text style={styles.text}>
           {appContext.settings.language === "en" ? item.name_en : item.name_mk}
-        </AppText>
+        </Text>
       </View>
     </TouchableOpacity>
   );
