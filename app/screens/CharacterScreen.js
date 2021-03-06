@@ -65,6 +65,7 @@ function CharacterScreen({ route }) {
 
   const [modalVisible, setModalVisible] = useState(false);
   const [image, setImage] = useState(null);
+  const [toCamera, setToCamera] = useState(false);
 
   updateCharacter = async (img) => {
     return new Promise((resolve, reject) =>
@@ -146,7 +147,10 @@ function CharacterScreen({ route }) {
           <Separator />
           <TouchableOpacity
             style={styles.button}
-            onPress={() => setModalVisible(true)}
+            onPress={() => {
+              setModalVisible(true);
+              setToCamera(false);
+            }}
           >
             <Text style={styles.buttonText}>{textOwn}</Text>
             <View style={styles.icon}>
@@ -161,6 +165,8 @@ function CharacterScreen({ route }) {
             modalVisible={modalVisible}
             setModalVisible={setModalVisible}
             setImage={setImage}
+            toCamera={toCamera}
+            setToCamera={setToCamera}
           />
         </View>
       </View>

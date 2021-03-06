@@ -60,6 +60,7 @@ function AddEditScreen({ route }) {
   const [selectedValue, setSelectedValue] = useState(route.params.root);
   const [uri, setUri] = useState();
   const navigation = useNavigation();
+  const [toCamera, setToCamera] = useState(false);
 
   useEffect(() => {
     if (typeof route.params.item !== "undefined") {
@@ -234,7 +235,12 @@ function AddEditScreen({ route }) {
 
   return (
     <Screen style={styles.container}>
-      <TouchableOpacity onPress={() => setModalVisible(true)}>
+      <TouchableOpacity
+        onPress={() => {
+          setModalVisible(true);
+          setToCamera(false);
+        }}
+      >
         <View style={styles.image}>
           {image ? (
             <Image
@@ -251,6 +257,8 @@ function AddEditScreen({ route }) {
         modalVisible={modalVisible}
         setModalVisible={setModalVisible}
         setImage={setImage}
+        toCamera={toCamera}
+        setToCamera={setToCamera}
       />
 
       <AppForm

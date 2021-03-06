@@ -12,8 +12,16 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
 
 import colors from "../config/colors";
+import { useState } from "react/cjs/react.development";
+import AppCamera from "./AppCamera";
 
-const CustomModal = ({ setModalVisible, modalVisible, setImage }) => {
+const CustomModal = ({
+  setModalVisible,
+  modalVisible,
+  setImage,
+  toCamera,
+  setToCamera,
+}) => {
   //select image from galery
   useEffect(() => {
     (async () => {
@@ -52,50 +60,55 @@ const CustomModal = ({ setModalVisible, modalVisible, setImage }) => {
           setModalVisible(!modalVisible);
         }}
       >
-        <TouchableOpacity
-          style={styles.centeredView}
-          onPress={() => setModalVisible(!modalVisible)}
-        >
-          <View style={styles.modalView}>
-            <Pressable
-              style={styles.buttonClose}
-              onPress={() => setModalVisible(!modalVisible)}
-            >
-              <MaterialCommunityIcons
-                name="arrow-left"
-                color={colors.primary}
-                size={30}
-              />
-            </Pressable>
+        {toCamera ? (
+          <AppCamera setImage={setImage} setModalVisible={setModalVisible} />
+        ) : (
+          <TouchableOpacity
+            style={styles.centeredView}
+            onPress={() => setModalVisible(!modalVisible)}
+          >
+            <View style={styles.modalView}>
+              <Pressable
+                style={styles.buttonClose}
+                onPress={() => setModalVisible(!modalVisible)}
+              >
+                <MaterialCommunityIcons
+                  name="arrow-left"
+                  color={colors.primary}
+                  size={30}
+                />
+              </Pressable>
 
-            <View style={styles.row}>
-              <View>
-                <View style={styles.circle}>
-                  <MaterialCommunityIcons
-                    name="camera"
-                    color={colors.primary}
-                    size={40}
-                  />
+              <View style={styles.row}>
+                <View>
+                  <TouchableOpacity onPress={() => setToCamera(true)}>
+                    <View style={styles.circle}>
+                      <MaterialCommunityIcons
+                        name="camera"
+                        color={colors.primary}
+                        size={40}
+                      />
+                    </View>
+                  </TouchableOpacity>
+                  <Text style={styles.text}>Camera</Text>
                 </View>
 
-                <Text style={styles.text}>Camera</Text>
-              </View>
-
-              <View>
-                <TouchableOpacity onPress={pickImage}>
-                  <View style={styles.circle}>
-                    <MaterialCommunityIcons
-                      name="image"
-                      color={colors.primary}
-                      size={40}
-                    />
-                  </View>
-                </TouchableOpacity>
-                <Text style={styles.text}>Galery</Text>
+                <View>
+                  <TouchableOpacity onPress={pickImage}>
+                    <View style={styles.circle}>
+                      <MaterialCommunityIcons
+                        name="image"
+                        color={colors.primary}
+                        size={40}
+                      />
+                    </View>
+                  </TouchableOpacity>
+                  <Text style={styles.text}>Galery</Text>
+                </View>
               </View>
             </View>
-          </View>
-        </TouchableOpacity>
+          </TouchableOpacity>
+        )}
       </Modal>
     </>
   );
