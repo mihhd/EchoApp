@@ -65,7 +65,7 @@ export default function App() {
 
   createTableSettings = async () => {
     executeSql(
-      "create table if not exists settings (id integer primary key not null, language text not null, character text not null, pin text not null, show_name not null, first_run not null);"
+      "create table if not exists settings (id integer primary key not null, language text not null, character text not null, show_name not null, first_run not null);"
     ).then(selectSettings());
   };
 

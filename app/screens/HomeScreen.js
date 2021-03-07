@@ -66,7 +66,12 @@ function HomeScreen() {
     mainContext.setTitle("");
     navigation.setOptions({
       headerRight: () => <View />,
-      headerLeft: () => <EditButton onPress={() => settingsHeader()} />,
+      headerLeft: () => (
+        <EditButton
+          settingsHeader={settingsHeader}
+          language={appContext.settings.language}
+        />
+      ),
     });
   }
 
@@ -94,8 +99,6 @@ function HomeScreen() {
 
     var newTitle = mainContext.title + " " + addTitle;
     if (newTitle.split(" ").length > 4) {
-      console.log("pogolemo");
-
       newTitle = newTitle.split(" ").splice(-4).join(" ");
     }
     mainContext.setTitle(newTitle);

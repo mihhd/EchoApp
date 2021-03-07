@@ -84,8 +84,8 @@ function CharacterScreen({ route }) {
     return new Promise((resolve, reject) =>
       db.transaction((tx) => {
         tx.executeSql(
-          "insert into settings (language, character, pin, show_name, first_run) values (?, ?, ?, ?, ?)",
-          [route.params.language, img, "0000", 1, 0]
+          "insert into settings (language, character, show_name, first_run) values (?, ?, ?, ?)",
+          [route.params.language, img, 1, 0]
         );
         tx.executeSql(
           "select * from settings",

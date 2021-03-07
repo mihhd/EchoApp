@@ -38,7 +38,6 @@ function AudioBar({ category, uri, setUri, item = null }) {
 
   async function playSound() {
     if (uri === undefined) {
-      console.log("Bitch still fat");
       return;
     }
     const soundObject = new Audio.Sound();
@@ -65,9 +64,7 @@ function AudioBar({ category, uri, setUri, item = null }) {
       let audioPlayer1 = soundObject;
       audioPlayer1.playAsync();
       // Your sound is playing!
-    } catch (error) {
-      console.log("made");
-    }
+    } catch (error) {}
   }
 
   async function startRecording() {
@@ -104,7 +101,6 @@ function AudioBar({ category, uri, setUri, item = null }) {
       console.log("Recording stored at", uri);
     } else {
       setUri(undefined);
-      console.log("Fuck fat bitch");
     }
   }
 
