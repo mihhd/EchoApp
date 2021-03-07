@@ -334,7 +334,6 @@ const styles = StyleSheet.create({
   text: {
     color: colors.brown,
     fontSize: 18,
-    fontFamily: Platform.OS === "android" ? "Roboto" : "Avenir",
   },
   marginBottom: {
     marginBottom: 25,
