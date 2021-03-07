@@ -80,13 +80,19 @@ export default function App() {
     });
   }
 
+  function timeout() {
+    setTimeout(() => {
+      setIsReady(true);
+    }, 2000);
+  }
+
   function dropTableItems() {
     executeSql("drop table items").then(executeSql("drop table settings"));
   }
 
   React.useLayoutEffect(() => {
     Promise.all([createTableItems(), createTableSettings()]).then(() =>
-      setIsReady(true)
+      timeout()
     );
   }, []);
 

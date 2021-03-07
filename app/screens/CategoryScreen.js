@@ -30,7 +30,12 @@ function CategoryScreen({ route }) {
 
     navigation.setOptions({
       title: mainContext.title,
-      headerLeft: () => <EditButton onPress={() => settingsHeader()} />,
+      headerLeft: () => (
+        <EditButton
+          settingsHeader={settingsHeader}
+          language={appContext.settings.language}
+        />
+      ),
       headerRight: () => (
         <View style={{ marginLeft: 10 }}>
           <IconButton name={"backspace-outline"} onPress={handleGoBack} />

@@ -174,11 +174,12 @@ function AddEditScreen({ route }) {
     return new Promise((resolve, reject) => {
       db.transaction((tx) => {
         tx.executeSql(
-          "insert into items (name_en, name_mk, image, sound_en, category, is_category) values (?, ?, ?, ?, ?, ?)",
+          "insert into items (name_en, name_mk, image, sound_en, sound_mk, category, is_category) values (?, ?, ?, ?, ?, ?, ?)",
           [
             name,
             name,
             newImageLocation,
+            newSoundLocation,
             newSoundLocation,
             selectedValue,
             route.params.isCategory,
