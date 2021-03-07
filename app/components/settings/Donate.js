@@ -1,7 +1,6 @@
 import React from "react";
 import { AppRegistry, View, StyleSheet, Text, Image, ScrollView, Linking, TouchableOpacity } from "react-native";
 
-
 function Donate(props) {
   return <View style={styles.container}>
   <ScrollView style={{ height: '100%'}}><Image 

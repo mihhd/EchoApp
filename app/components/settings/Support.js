@@ -17,8 +17,6 @@ export default class Contact extends Component {
     };
   }
 
-
-
   postMsg = (name, mobile, email, msg, nameClear, mobileClear, emailClear, msgClear) => {
     if(this.state.msg!=null){ 
       fetch('https://echoapp-supp-default-rtdb.firebaseio.com/contacts.json', {
