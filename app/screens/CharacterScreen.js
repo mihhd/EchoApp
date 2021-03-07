@@ -4,17 +4,19 @@ import {
   StyleSheet,
   FlatList,
   TouchableOpacity,
-  Modal,
-  Button,
+  Text,
 } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 
-import AppText from "../components/AppText";
 import Separator from "../components/Separator";
 import colors from "../config/colors";
 import Screen from "../components/Screen";
 import Character from "../components/Character";
 import CustomModal from "../components/CustomModal";
+import { useContext } from "react";
+import * as SQLite from "expo-sqlite";
+import AppContext from "../context/appContext";
+import { useEffect } from "react/cjs/react.development";
 
 const characters = [
   {
@@ -43,16 +45,81 @@ const characters = [
   },
 ];
 
-function CharacterScreen(props) {
+const db = SQLite.openDatabase("echoDB.db");
+
+function CharacterScreen({ route }) {
+  const appContext = useContext(AppContext);
+
+  const [textCharacter, setTextCharacter] = useState("");
+  const [textOwn, setTextOwn] = useState("");
+
+  useEffect(() => {
+    if (route.params.language === "mk") {
+      setTextCharacter("Изберете карактер");
+      setTextOwn("Изберете ваш");
+    } else {
+      setTextCharacter("Choose a Character");
+      setTextOwn("Make your own");
+    }
+  }, [appContext.language]);
+
   const [modalVisible, setModalVisible] = useState(false);
   const [image, setImage] = useState(null);
+
+  updateCharacter = async (img) => {
+    return new Promise((resolve, reject) =>
+      db.transaction((tx) => {
+        tx.executeSql(
+          "update items set image = ? where id = 1",
+          [img],
+          () => resolve(),
+          (_, error) => reject(error)
+        );
+      })
+    );
+  };
+
+  insertSettings = async (img) => {
+    return new Promise((resolve, reject) =>
+      db.transaction((tx) => {
+        tx.executeSql(
+          "insert into settings (language, character, pin, show_name, first_run) values (?, ?, ?, ?, ?)",
+          [route.params.language, img, "0000", 1, 0]
+        );
+        tx.executeSql(
+          "select * from settings",
+          [],
+          (_, { rows }) => {
+            resolve(rows._array[0]);
+          },
+          (_, _error) => {
+            console.log(_error);
+            reject;
+          }
+        );
+      })
+    );
+  };
+
+  function chooseCharacter(img) {
+    const upDate = updateCharacter(img);
+    const insert = insertSettings(img);
+    Promise.all([upDate, insert])
+      .then((settings) => {
+        appContext.setSettings(settings[1]);
+        appContext.setFirstRun(false);
+      })
+      .catch((error) => {
+        console.error(error.message);
+      });
+  }
 
   return (
     <Screen>
       <View style={styles.container}>
         <View style={styles.center}>
-          <AppText style={styles.title}>Choose a Character</AppText>
-          <Separator style={styles.separator} />
+          <Text style={styles.title}>{textCharacter}</Text>
+          <Separator />
         </View>
 
         <FlatList
@@ -61,22 +128,27 @@ function CharacterScreen(props) {
           numColumns="3"
           columnWrapperStyle={styles.columnWrapper}
           style={styles.flatList}
-          renderItem={({ item }) => <Character image={item.image} />}
+          renderItem={({ item }) => (
+            <Character chooseCharacter={chooseCharacter} image={item.image} />
+          )}
         />
 
         {image && (
           <View style={[styles.center, { marginTop: -20 }]}>
-            <Character image={{ uri: image }} />
+            <Character
+              chooseCharacter={chooseCharacter}
+              image={{ uri: image }}
+            />
           </View>
         )}
 
         <View style={styles.center}>
-          <Separator style={styles.separator} />
+          <Separator />
           <TouchableOpacity
             style={styles.button}
             onPress={() => setModalVisible(true)}
           >
-            <AppText style={styles.buttonText}>Make your own</AppText>
+            <Text style={styles.buttonText}>{textOwn}</Text>
             <View style={styles.icon}>
               <MaterialCommunityIcons
                 name="plus"
@@ -118,11 +190,6 @@ const styles = StyleSheet.create({
   buttonText: {
     color: colors.white,
     fontSize: 28,
-  },
-  separator: {
-    color: colors.medium,
-    width: "30%",
-    margin: 20,
   },
   columnWrapper: {
     justifyContent: "space-evenly",

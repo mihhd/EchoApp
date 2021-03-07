@@ -1,7 +1,7 @@
-import React, { useLayoutEffect, useState } from "react";
+import React, { useLayoutEffect, useState, useContext, useEffect } from "react";
 import { View, StyleSheet, FlatList } from "react-native";
 import * as SQLite from "expo-sqlite";
-import * as FileSystem from "expo-file-system";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 import Item from "../components/Item";
 import Screen from "../components/Screen";
@@ -10,49 +10,68 @@ import { useNavigation } from "@react-navigation/native";
 import EditButton from "../components/EditButton";
 import SettingsHeader from "../components/SettingsHeader";
 import IconButton from "../components/IconButton";
-import { useEffect } from "react";
-import { useContext } from "react";
 import MainContext from "../context/mainContext";
+import EditModal from "../components/EditModal";
+import { TouchableOpacity } from "react-native-gesture-handler";
+import AppContext from "../context/appContext";
 
 const db = SQLite.openDatabase("echoDB.db");
-const imagesDir = FileSystem.documentDirectory + "images/";
-const soundsDir = FileSystem.documentDirectory + "sounds/";
 
 function HomeScreen() {
   const mainContext = useContext(MainContext);
   const [items, setItems] = useState(null);
-  const navigation = useNavigation();
+  const [editMode, setEditMode] = useState();
+  const [modalVisible, setModalVisible] = useState(false);
+  const [itemToEdit, setItemToEdit] = useState();
 
-  function selectItems() {
+  const navigation = useNavigation();
+  const appContext = useContext(AppContext);
+
+  function selectItems(sqlQuery) {
     db.transaction((tx) => {
       tx.executeSql(
-        `select * from items where category = "Home";`,
+        sqlQuery,
         [],
         (_, { rows: { _array } }) => {
           setItems(_array);
         },
-        () => console.log("kurac")
+        (_, _error) => {
+          console.log(_error);
+        }
       );
     });
   }
 
   useEffect(() => {
-    selectItems();
+    var sqlQuery = `select id, name_en, name_mk, image, sound_${appContext.settings.language} as sound, category, is_category from items where category = "Home"`;
+    selectItems(sqlQuery);
   }, [items]);
 
   useLayoutEffect(() => {
     initialHeader();
   }, []);
 
+  useEffect(() => {
+    if (mainContext.title === "") {
+      navigation.setOptions({ title: "", headerRight: () => <View /> });
+    }
+  }, [mainContext.title]);
+
+  function removeTitle() {
+    mainContext.setTitle("");
+  }
+
   function initialHeader() {
+    setEditMode(false);
+    mainContext.setTitle("");
     navigation.setOptions({
-      title: "",
-      headerLeft: () => <EditButton onPress={() => settingsHeader()} />,
       headerRight: () => <View />,
+      headerLeft: () => <EditButton onPress={() => settingsHeader()} />,
     });
   }
 
   function settingsHeader() {
+    setEditMode(true);
     navigation.setOptions({
       title: "",
       headerRight: () => (
@@ -79,11 +98,23 @@ function HomeScreen() {
 
       newTitle = newTitle.split(" ").splice(-4).join(" ");
     }
-    console.log(newTitle);
     mainContext.setTitle(newTitle);
     navigation.setOptions({
       title: newTitle,
+      headerRight: () => (
+        <TouchableOpacity
+          style={{ marginRight: 50, marginTop: 5 }}
+          onPress={removeTitle}
+        >
+          <MaterialCommunityIcons name="close" size={15} color={colors.light} />
+        </TouchableOpacity>
+      ),
     });
+  }
+
+  function editItem(item) {
+    setItemToEdit(item);
+    setModalVisible(true);
   }
 
   return (
@@ -95,10 +126,21 @@ function HomeScreen() {
           numColumns="3"
           columnWrapperStyle={styles.columnWrapper}
           renderItem={({ item }) => (
-            <Item item={item} setHeaderTitle={setHeaderTitle} />
+            <Item
+              item={item}
+              setHeaderTitle={setHeaderTitle}
+              editMode={editMode}
+              editItem={editItem}
+            />
           )}
         />
       </View>
+      <EditModal
+        itemToEdit={itemToEdit}
+        modalVisible={modalVisible}
+        setModalVisible={setModalVisible}
+        language={appContext.settings.language}
+      />
     </Screen>
   );
 }
@@ -112,17 +154,5 @@ const styles = StyleSheet.create({
     justifyContent: "space-evenly",
   },
 });
-
-// Empty document directory
-
-// FileSystem.readDirectoryAsync(imagesDir).then((result) => {
-//   console.log(result).catch((err) => console.log("error: " + err));
-// });
-
-// async function deleteAllGifs() {
-//   console.log("Deleting all files...");
-//   await FileSystem.deleteAsync(soundsDir);
-//   await FileSystem.deleteAsync(imagesDir);
-// }
 
 export default HomeScreen;

@@ -1,19 +1,21 @@
-import { StatusBar } from "expo-status-bar";
 import React, { useState } from "react";
-import { StyleSheet, Text, View } from "react-native";
-import AddEditScreen from "./app/screens/AddEditScreen";
-import CharacterScreen from "./app/screens/CharacterScreen";
-import HomeScreen from "./app/screens/HomeScreen";
+import { StyleSheet } from "react-native";
 import WelcomeScreen from "./app/screens/WelcomeScreen";
 import * as SQLite from "expo-sqlite";
 import { NavigationContainer } from "@react-navigation/native";
 import MainNavigator from "./app/navigation/MainNavigator";
 import navigationTheme from "./app/navigation/navigationTheme";
 import { assetsItems } from "./app/config/assetsItems";
+import WelcomeNavigator from "./app/navigation/WelcomeNavigator";
+import AppContext from "./app/context/appContext";
 
 const db = SQLite.openDatabase("echoDB.db");
 
 export default function App() {
+  const [isReady, setIsReady] = useState(false);
+  const [firstRun, setFirstRun] = useState(true);
+  const [settings, setSettings] = useState();
+
   executeSql = async (sql, params = []) => {
     return new Promise((resolve, reject) =>
       db.transaction((tx) => {
@@ -22,10 +24,9 @@ export default function App() {
           params,
           (_, { rows }) => {
             resolve(rows._array);
-            console.log(sql + " OK");
           },
-          () => {
-            console.log("ERROR " + sql);
+          (_, _error) => {
+            console.log("ERROR " + sql + " err: " + _error);
             reject;
           }
         );
@@ -34,51 +35,83 @@ export default function App() {
   };
 
   createTableItems = async () => {
-    await executeSql(
-      "create table if not exists items (id integer primary key not null, name text not null, image text not null, sound text, category text not null, is_category not null);"
-    );
+    executeSql(
+      "create table if not exists items (id integer primary key not null, name_en text not null, name_mk text not null, image text not null, sound_en text, sound_mk text, category text not null, is_category not null);"
+    ).then(selectItems());
   };
 
-  function createTableSettings() {
-    db.transaction((tx) => {
-      tx.executeSql(
-        "create table if not exists items (id integer primary key not null, name text not null, image text not null, sound text, category text not null, is_category not null);"
-      );
-    });
+  function selectItems() {
+    executeSql("select * from items").then((items) => insertItems(items));
   }
 
   insertItems = async (items) => {
     if (items.length === 0) {
-      console.log(items.length);
       for (const item of assetsItems) {
         await executeSql(
-          "insert into items (name, image, sound, category, is_category) values (?, ?, ?, ?, ?)",
-          [item.name, item.image, item.sound, item.category, item.is_category]
+          "insert into items (name_en, name_mk, image, sound_en, sound_mk, category, is_category) values (?, ?, ?, ?, ?, ?, ?)",
+          [
+            item.name_en,
+            item.name_mk,
+            item.image,
+            item.sound_en,
+            item.sound_mk,
+            item.category,
+            item.is_category,
+          ]
         );
       }
     }
   };
 
-  function selectItems() {
-    executeSql("select * from items", []).then((items) => insertItems(items));
+  createTableSettings = async () => {
+    executeSql(
+      "create table if not exists settings (id integer primary key not null, language text not null, character text not null, pin text not null, show_name not null, first_run not null);"
+    ).then(selectSettings());
+  };
+
+  function selectSettings() {
+    executeSql("select * from settings").then((sets) => {
+      if (sets.length > 0) {
+        setSettings(sets[0]);
+        setFirstRun(false);
+      } else {
+        setFirstRun(true);
+      }
+    });
   }
 
   function dropTableItems() {
-    executeSql("drop table items");
+    executeSql("drop table items").then(executeSql("drop table settings"));
   }
 
   React.useLayoutEffect(() => {
-    createTableItems();
-    selectItems();
+    Promise.all([createTableItems(), createTableSettings()]).then(() =>
+      setIsReady(true)
+    );
   }, []);
 
   return (
-    <NavigationContainer theme={navigationTheme}>
-      <MainNavigator />
-    </NavigationContainer>
+    <>
+      {isReady ? (
+        <AppContext.Provider
+          value={{ settings, setSettings, firstRun, setFirstRun }}
+        >
+          <NavigationContainer theme={navigationTheme}>
+            {firstRun ? <WelcomeNavigator /> : <MainNavigator />}
+          </NavigationContainer>
+        </AppContext.Provider>
+      ) : (
+        <WelcomeScreen />
+      )}
+    </>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {},
+  container: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "#aabbcc",
+  },
 });

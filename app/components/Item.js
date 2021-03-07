@@ -1,74 +1,86 @@
-import React from "react";
-import { View, StyleSheet, Image, TouchableOpacity } from "react-native";
+import React, { useContext } from "react";
+import { View, StyleSheet, Image, TouchableOpacity, Text } from "react-native";
 import { Audio } from "expo-av";
 import * as SQLite from "expo-sqlite";
 
 import colors from "../config/colors";
-import AppText from "./AppText";
 import { useNavigation } from "@react-navigation/native";
 import { assetsItems } from "../config/assetsItems";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
+import AppContext from "../context/appContext";
 
 const db = SQLite.openDatabase("echoDB.db");
 
-function Item({ item, setHeaderTitle }) {
+function Item({ item, setHeaderTitle, editMode, editItem }) {
   const [sound, setSound] = React.useState();
   const navigation = useNavigation();
+  const appContext = useContext(AppContext);
 
   async function playSound() {
-    console.log("Loading Sound");
     try {
-      const { sound } = await Audio.Sound.createAsync(
-        item.sound.startsWith("file")
-          ? { uri: item.sound }
-          : assetsItems.find((i) => i.name === item.name).sound
-      );
-      setSound(sound);
-
-      console.log("Playing Sound");
-      await sound.playAsync();
+      if (appContext.settings.language === "en") {
+        const { sound } = await Audio.Sound.createAsync(
+          item.sound.startsWith("file")
+            ? { uri: item.sound }
+            : assetsItems.find((i) => i.name_mk === item.name_mk).sound_en
+        );
+        setSound(sound);
+        await sound.playAsync();
+      } else {
+        const { sound } = await Audio.Sound.createAsync(
+          item.sound.startsWith("file")
+            ? { uri: item.sound }
+            : assetsItems.find((i) => i.name_en === item.name_en).sound_mk
+        );
+        setSound(sound);
+        await sound.playAsync();
+      }
     } catch (error) {
-      console.log("NE PEJ + " + error);
+      console.log("No sound + " + error);
     }
   }
 
   function itemTouched() {
-    playSound();
+    if (editMode) {
+      editItem(item);
+    } else {
+      playSound();
 
-    if (item.sound != null) {
-      setHeaderTitle(item.name);
-    }
+      if (item.sound != null) {
+        appContext.settings.language === "en"
+          ? setHeaderTitle(item.name_en)
+          : setHeaderTitle(item.name_mk);
+      }
 
-    if (item.is_category == 1) {
-      selectCategoryItems().then((results) => navigateToCategory(results));
+      if (item.is_category == 1) {
+        var sqlQuery = `select id, name_en, name_mk, image, sound_${appContext.settings.language} as sound, category, is_category from items where category = "${item.name_en}"`;
+        selectCategoryItems(sqlQuery).then((results) =>
+          navigateToCategory(results)
+        );
+      }
     }
   }
 
-  async function selectCategoryItems() {
+  async function selectCategoryItems(sqlQuery) {
     return new Promise((resolve, reject) => {
       db.transaction((tx) => {
-        tx.executeSql(
-          `select * from items where category = ?;`,
-          [item.name],
-          (_, { rows: { _array } }) => {
-            resolve(_array);
-          }
-        );
+        tx.executeSql(sqlQuery, [], (_, { rows: { _array } }) => {
+          resolve(_array);
+        });
       });
     });
   }
 
   function navigateToCategory(results) {
-    console.log(results);
     navigation.navigate("Category", {
       items: results,
-      categoryName: item.name,
+      categoryName: item.name_en,
     });
   }
 
   React.useEffect(() => {
     return sound
       ? () => {
-          console.log("Unloading Sound");
           sound.unloadAsync();
         }
       : undefined;
@@ -76,6 +88,16 @@ function Item({ item, setHeaderTitle }) {
 
   return (
     <TouchableOpacity onPress={() => itemTouched()}>
+      {editMode && (
+        <View style={styles.edit}>
+          <MaterialCommunityIcons
+            name="pencil-outline"
+            size={25}
+            color={colors.light}
+          />
+        </View>
+      )}
+
       <View style={styles.container}>
         <Image
           source={
@@ -83,7 +105,9 @@ function Item({ item, setHeaderTitle }) {
           }
           style={styles.image}
         />
-        <AppText style={styles.text}> {item.name} </AppText>
+        <Text style={styles.text}>
+          {appContext.settings.language === "en" ? item.name_en : item.name_mk}
+        </Text>
       </View>
     </TouchableOpacity>
   );
@@ -104,9 +128,19 @@ const styles = StyleSheet.create({
     width: 110,
     padding: 5,
   },
+  edit: {
+    alignSelf: "flex-end",
+    borderRadius: 50,
+    backgroundColor: "#babedf",
+    alignItems: "center",
+    justifyContent: "center",
+    marginBottom: -25,
+    marginRight: -5,
+    zIndex: 15,
+  },
   image: {
-    width: "80%",
-    height: "80%",
+    width: "70%",
+    height: "70%",
   },
   text: {
     color: colors.primary,
