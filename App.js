@@ -9,6 +9,9 @@ import { assetsItems } from "./app/config/assetsItems";
 import WelcomeNavigator from "./app/navigation/WelcomeNavigator";
 import AppContext from "./app/context/appContext";
 
+import logger from "./app/utility/logger";
+logger.start();
+
 const db = SQLite.openDatabase("echoDB.db");
 
 export default function App() {
