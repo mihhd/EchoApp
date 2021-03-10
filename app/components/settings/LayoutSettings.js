@@ -1,5 +1,5 @@
 import { useNavigation } from "@react-navigation/native";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useLayoutEffect, useState } from "react";
 import { View, StyleSheet, Text } from "react-native";
 import Screen from "../Screen";
 import SettingsBackButton from "./SettingsBackButton";
@@ -33,7 +33,7 @@ function LayoutSettings() {
 
   useEffect(() => {}, [selectedValue]);
 
-  React.useLayoutEffect(() => {
+  useLayoutEffect(() => {
     navigation.setOptions({
       headerLeft: () => <SettingsBackButton onPress={setLayoutSettings} />,
     });

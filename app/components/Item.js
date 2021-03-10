@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import { View, StyleSheet, Image, TouchableOpacity, Text } from "react-native";
 import { Audio } from "expo-av";
 import * as SQLite from "expo-sqlite";
@@ -12,7 +12,7 @@ import AppContext from "../context/appContext";
 const db = SQLite.openDatabase("echoDB.db");
 
 function Item({ item, setHeaderTitle, editMode, editItem }) {
-  const [sound, setSound] = React.useState();
+  const [sound, setSound] = useState();
   const navigation = useNavigation();
   const appContext = useContext(AppContext);
 
@@ -78,7 +78,7 @@ function Item({ item, setHeaderTitle, editMode, editItem }) {
     });
   }
 
-  React.useEffect(() => {
+  useEffect(() => {
     return sound
       ? () => {
           sound.unloadAsync();

@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 import { View, StyleSheet, TouchableOpacity, Text } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { Audio } from "expo-av";
-import { Stopwatch } from "react-native-stopwatch-timer";
+// import { Stopwatch } from "react-native-stopwatch-timer";
 import { assetsItems } from "../config/assetsItems";
 
 import colors from "../config/colors";
@@ -32,8 +32,8 @@ function AudioBar({ category, uri, setUri, item = null }) {
 
   category = category;
   const [recording, setRecording] = useState();
-  const [isStopwatchStart, setIsStopwatchStart] = useState(false);
-  const [resetStopwatch, setResetStopwatch] = useState(false);
+  // const [isStopwatchStart, setIsStopwatchStart] = useState(false);
+  // const [resetStopwatch, setResetStopwatch] = useState(false);
   const [noSound, setNoSound] = useState(false);
 
   async function playSound() {
@@ -83,7 +83,7 @@ function AudioBar({ category, uri, setUri, item = null }) {
       await recording.startAsync();
       setRecording(recording);
       console.log("Recording started");
-      setIsStopwatchStart(true);
+      // setIsStopwatchStart(true);
     } catch (err) {
       console.error("Failed to start recording", err);
     }
@@ -93,8 +93,8 @@ function AudioBar({ category, uri, setUri, item = null }) {
     console.log("Stopping recording..");
     await recording.stopAndUnloadAsync();
     setRecording(undefined);
-    setIsStopwatchStart(true);
-    setResetStopwatch(true);
+    // setIsStopwatchStart(true);
+    // setResetStopwatch(true);
     if (isSaving) {
       const uri = recording.getURI();
       setUri(uri);
@@ -165,12 +165,12 @@ function AudioBar({ category, uri, setUri, item = null }) {
               color={colors.danger}
               style={{ marginRight: 5 }}
             />
-
+            {/* 
             <Stopwatch
               start={isStopwatchStart}
               reset={resetStopwatch}
               options={{ backgroundColor: "transparent" }}
-            />
+            /> */}
           </View>
 
           <TouchableOpacity

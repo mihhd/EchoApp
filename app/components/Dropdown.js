@@ -1,8 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { View, StyleSheet } from "react-native";
 import { Picker } from "@react-native-picker/picker";
 import colors from "../config/colors";
-import { useEffect } from "react";
 import * as SQLite from "expo-sqlite";
 
 const db = SQLite.openDatabase("echoDB.db");

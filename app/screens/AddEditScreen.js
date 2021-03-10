@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import {
   View,
   TouchableOpacity,
@@ -21,7 +21,6 @@ import Dropdown from "../components/Dropdown";
 import AudioBar from "../components/AudioBar";
 import CustomModal from "../components/CustomModal";
 import { useNavigation } from "@react-navigation/native";
-import { useEffect } from "react/cjs/react.development";
 import AppContext from "../context/appContext";
 
 const db = SQLite.openDatabase("echoDB.db");

@@ -5,10 +5,8 @@ import {
   View,
   Text,
   TouchableOpacity,
-  SafeAreaView,
 } from "react-native";
 import { Camera } from "expo-camera";
-import { Video } from "expo-av";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import Screen from "./Screen";
 

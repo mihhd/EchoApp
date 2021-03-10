@@ -1,5 +1,5 @@
 import { useNavigation } from "@react-navigation/native";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useLayoutEffect, useState } from "react";
 import { View, StyleSheet, Text } from "react-native";
 import { Screen } from "react-native-screens";
 import colors from "../../config/colors";
@@ -30,7 +30,7 @@ function GeneralSettings() {
     appContext.settings.language
   );
 
-  React.useLayoutEffect(() => {
+  useLayoutEffect(() => {
     navigation.setOptions({
       headerLeft: () => (
         <SettingsBackButton onPress={() => navigation.goBack()} />

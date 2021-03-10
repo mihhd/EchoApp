@@ -1,18 +1,18 @@
 import React, { useLayoutEffect, useState, useContext, useEffect } from "react";
 import { View, StyleSheet, FlatList } from "react-native";
+import { useNavigation } from "@react-navigation/native";
 import * as SQLite from "expo-sqlite";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { TouchableOpacity } from "react-native-gesture-handler";
 
 import Item from "../components/Item";
 import Screen from "../components/Screen";
 import colors from "../config/colors";
-import { useNavigation } from "@react-navigation/native";
 import EditButton from "../components/EditButton";
 import SettingsHeader from "../components/SettingsHeader";
 import IconButton from "../components/IconButton";
 import MainContext from "../context/mainContext";
 import EditModal from "../components/EditModal";
-import { TouchableOpacity } from "react-native-gesture-handler";
 import AppContext from "../context/appContext";
 
 const db = SQLite.openDatabase("echoDB.db");

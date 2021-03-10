@@ -1,6 +1,6 @@
 import { createStackNavigator } from "@react-navigation/stack";
-import React, { useState } from "react";
-import { View, StyleSheet } from "react-native";
+import React from "react";
+import { StyleSheet } from "react-native";
 import About from "../components/settings/About";
 import Donate from "../components/settings/Donate";
 import GeneralSettings from "../components/settings/GeneralSettings";

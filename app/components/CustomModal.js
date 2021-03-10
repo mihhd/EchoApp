@@ -12,7 +12,6 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
 
 import colors from "../config/colors";
-import { useState } from "react/cjs/react.development";
 import AppCamera from "./AppCamera";
 
 const CustomModal = ({

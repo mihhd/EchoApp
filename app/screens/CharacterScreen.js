@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import {
   View,
   StyleSheet,
@@ -13,10 +13,8 @@ import colors from "../config/colors";
 import Screen from "../components/Screen";
 import Character from "../components/Character";
 import CustomModal from "../components/CustomModal";
-import { useContext } from "react";
 import * as SQLite from "expo-sqlite";
 import AppContext from "../context/appContext";
-import { useEffect } from "react/cjs/react.development";
 
 const characters = [
   {

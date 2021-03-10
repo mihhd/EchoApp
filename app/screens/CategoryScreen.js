@@ -1,7 +1,7 @@
+import React, { useContext, useState } from "react";
 import { useNavigation } from "@react-navigation/native";
-import React from "react";
-import { useContext, useState } from "react";
 import { View, StyleSheet, FlatList } from "react-native";
+
 import EditButton from "../components/EditButton";
 import IconButton from "../components/IconButton";
 import Item from "../components/Item";
@@ -70,8 +70,6 @@ function CategoryScreen({ route }) {
 
     var newTitle = mainContext.title + " " + addTitle;
     if (newTitle.split(" ").length > 4) {
-      console.log("pogolemo");
-
       newTitle = newTitle.split(" ").splice(-4).join(" ");
     }
     console.log(newTitle);

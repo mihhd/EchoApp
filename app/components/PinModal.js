@@ -1,13 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { Modal, StyleSheet, View, TouchableOpacity, Text } from "react-native";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
-import * as SQLite from "expo-sqlite";
 
 import colors from "../config/colors";
-import { useNavigation } from "@react-navigation/native";
 import AppTextInput from "./AppTextInput";
-
-const db = SQLite.openDatabase("echoDB.db");
 
 const PinModal = ({
   setModalVisible,
