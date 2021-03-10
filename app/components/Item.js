@@ -101,7 +101,9 @@ function Item({ item, setHeaderTitle, editMode, editItem }) {
       <View style={styles.container}>
         <Image
           source={
-            item.image.startsWith("file") ? { uri: item.image } : item.image
+            item.image.startsWith("file")
+              ? { uri: item.image }
+              : assetsItems.find((i) => i.name_en === item.name_en).image
           }
           style={styles.image}
         />
