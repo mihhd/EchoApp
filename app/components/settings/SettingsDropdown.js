@@ -3,7 +3,7 @@ import { View, StyleSheet } from "react-native";
 import colors from "../../config/colors";
 import { Picker } from "@react-native-picker/picker";
 
-function SettingsDropdown({ options, selectedValue, setSelectedValue }) {
+function SettingsDropdown({ options, selectedValue, changeLanguage }) {
   return (
     <View style={styles.picker}>
       <Picker
@@ -11,7 +11,7 @@ function SettingsDropdown({ options, selectedValue, setSelectedValue }) {
         selectedValue={selectedValue}
         style={styles.dropdown}
         itemStyle={{ height: 44 }}
-        onValueChange={(itemValue) => setSelectedValue(itemValue)}
+        onValueChange={(itemValue) => changeLanguage(itemValue)}
       >
         {options.map((option) => (
           <Picker.Item

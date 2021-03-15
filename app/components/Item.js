@@ -8,6 +8,7 @@ import { useNavigation } from "@react-navigation/native";
 import { assetsItems } from "../config/assetsItems";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import AppContext from "../context/appContext";
+import { characters } from "../config/characters";
 
 const db = SQLite.openDatabase("echoDB.db");
 
@@ -103,6 +104,8 @@ function Item({ item, setHeaderTitle, editMode, editItem }) {
           source={
             item.image.startsWith("file")
               ? { uri: item.image }
+              : item.id === 1
+              ? characters.find((i) => i.image == item.image).image
               : assetsItems.find((i) => i.name_en === item.name_en).image
           }
           style={styles.image}

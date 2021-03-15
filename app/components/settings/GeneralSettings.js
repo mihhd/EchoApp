@@ -6,11 +6,14 @@ import colors from "../../config/colors";
 import AppContext from "../../context/appContext";
 import SettingsBackButton from "./SettingsBackButton";
 import SettingsDropdown from "./SettingsDropdown";
+import * as SQLite from "expo-sqlite";
 
 const languageOptions = [
   { key: "en", label: "English", value: "en" },
   { key: "mk", label: "Македонски", value: "mk" },
 ];
+
+const db = SQLite.openDatabase("echoDB.db");
 
 function GeneralSettings() {
   const appContext = useContext(AppContext);
@@ -32,11 +35,34 @@ function GeneralSettings() {
 
   useLayoutEffect(() => {
     navigation.setOptions({
-      headerLeft: () => (
-        <SettingsBackButton onPress={() => navigation.goBack()} />
-      ),
+      headerLeft: () => <SettingsBackButton onPress={() => changeGeneral()} />,
     });
   }, [navigation]);
+
+  function changeGeneral() {
+    appContext.setSettings(appContext.settings);
+    updateLanguage().then(() => navigation.goBack());
+  }
+
+  function changeLanguage(selected) {
+    setSelectedLanguage(selected);
+    appContext.settings.language = selected;
+  }
+
+  updateLanguage = async () => {
+    return new Promise((resolve, reject) =>
+      db.transaction((tx) => {
+        tx.executeSql(
+          "update settings set language = ? where id = 1",
+          [appContext.settings.language],
+          () => {
+            resolve();
+          },
+          (_, error) => reject(error)
+        );
+      })
+    );
+  };
 
   return (
     <Screen>
@@ -46,7 +72,7 @@ function GeneralSettings() {
           <SettingsDropdown
             options={languageOptions}
             selectedValue={selectedLanguage}
-            setSelectedValue={setSelectedLanguage}
+            changeLanguage={changeLanguage}
           />
         </View>
       </View>
