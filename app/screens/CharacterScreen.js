@@ -21,19 +21,7 @@ const db = SQLite.openDatabase("echoDB.db");
 
 function CharacterScreen({ route }) {
   const appContext = useContext(AppContext);
-
-  const [textCharacter, setTextCharacter] = useState("");
-  const [textOwn, setTextOwn] = useState("");
-
-  useEffect(() => {
-    if (route.params.language === "mk") {
-      setTextCharacter("Изберете карактер");
-      setTextOwn("Изберете ваш");
-    } else {
-      setTextCharacter("Choose a Character");
-      setTextOwn("Make your own");
-    }
-  }, [appContext.language]);
+  const { localization } = useContext(AppContext);
 
   const [modalVisible, setModalVisible] = useState(false);
   const [image, setImage] = useState(null);
@@ -91,7 +79,9 @@ function CharacterScreen({ route }) {
     <Screen>
       <View style={styles.container}>
         <View style={styles.center}>
-          <Text style={styles.title}>{textCharacter}</Text>
+          <Text style={styles.title}>
+            {localization.t("header_choose_character")}
+          </Text>
           <Separator />
         </View>
 
@@ -124,7 +114,9 @@ function CharacterScreen({ route }) {
               setToCamera(false);
             }}
           >
-            <Text style={styles.buttonText}>{textOwn}</Text>
+            <Text style={styles.buttonText}>
+              {localization.t("button_your_character")}
+            </Text>
             <View style={styles.icon}>
               <MaterialCommunityIcons
                 name="plus"

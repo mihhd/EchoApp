@@ -66,12 +66,7 @@ function HomeScreen() {
     mainContext.setTitle("");
     navigation.setOptions({
       headerRight: () => <View />,
-      headerLeft: () => (
-        <EditButton
-          settingsHeader={settingsHeader}
-          language={appContext.settings.language}
-        />
-      ),
+      headerLeft: () => <EditButton settingsHeader={settingsHeader} />,
     });
   }
 

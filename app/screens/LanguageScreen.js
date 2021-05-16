@@ -1,16 +1,19 @@
-import React from "react";
+import React, { useContext } from "react";
 import { View, StyleSheet, Image, Text } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import Screen from "../components/Screen";
 import Separator from "../components/Separator";
 import colors from "../config/colors";
+import AppContext from "../context/appContext";
 
 import { useNavigation } from "@react-navigation/native";
 
 function LanguageScreen() {
+  const { localization } = useContext(AppContext);
   const navigation = useNavigation();
 
   function selectLanguage(language) {
+    localization.setLocale(language);
     navigation.navigate("Character", { language: language });
   }
 

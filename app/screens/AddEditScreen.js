@@ -33,26 +33,8 @@ const validationSchema = Yup.object().shape({
 });
 
 function AddEditScreen({ route }) {
-  //set content language; this approach should be changed in the future
   const appContext = useContext(AppContext);
-
-  const [textName, setTextName] = useState("");
-  const [textCategory, setTextCategory] = useState("");
-  const [textAudio, setTextAudio] = useState("");
-
-  useEffect(() => {
-    if (appContext.settings.language === "mk") {
-      setTextName("Име");
-      setTextCategory("Категорија");
-      setTextAudio("Звук");
-    } else {
-      setTextName("Name");
-      setTextCategory("Category");
-      setTextAudio("Audio");
-    }
-  }, [appContext.settings.language]);
-
-  /////////////////////////////////////////////////////////////
+  const { localization } = useContext(AppContext);
 
   const [modalVisible, setModalVisible] = useState(false);
   const [image, setImage] = useState("");
@@ -115,7 +97,6 @@ function AddEditScreen({ route }) {
       const imgDirInfo = FileSystem.getInfoAsync(imagesDir);
 
       if (!imgDirInfo.exists) {
-        console.log("Images directory doesn't exist, creating...");
         FileSystem.makeDirectoryAsync(imagesDir, { intermediates: true });
       }
 
@@ -126,8 +107,6 @@ function AddEditScreen({ route }) {
         newLocation = image;
       } else {
         newLocation = imagesDir + name + "." + fileExtension;
-        console.log("New image location: " + newLocation);
-
         FileSystem.copyAsync({ from: image, to: newLocation });
       }
 
@@ -140,7 +119,6 @@ function AddEditScreen({ route }) {
       const sndDirInfo = FileSystem.getInfoAsync(soundsDir);
 
       if (!sndDirInfo.exists) {
-        console.log("Sounds directory doesn't exist, creating...");
         FileSystem.makeDirectoryAsync(soundsDir, { intermediates: true });
       }
 
@@ -149,8 +127,6 @@ function AddEditScreen({ route }) {
         newLocation = uri;
       } else {
         newLocation = soundsDir + name + ".m4a";
-        console.log("New sound location: " + newLocation);
-
         FileSystem.copyAsync({ from: uri, to: newLocation });
       }
       resolve(newLocation);
@@ -261,7 +237,7 @@ function AddEditScreen({ route }) {
         validationSchema={validationSchema}
       >
         <View style={styles.marginBottom}>
-          <Text style={styles.text}>{textName}</Text>
+          <Text style={styles.text}>{localization.t("text_name")}</Text>
           <AppFormField
             autoCapitalize="none"
             autoCorrect={false}
@@ -272,7 +248,7 @@ function AddEditScreen({ route }) {
         </View>
         {!!!+route.params.isCategory && (
           <View style={styles.marginBottom}>
-            <Text style={styles.text}>{textCategory}</Text>
+            <Text style={styles.text}>{localization.t("text_category")}</Text>
 
             <Dropdown
               root={route.params.root}
@@ -283,7 +259,7 @@ function AddEditScreen({ route }) {
           </View>
         )}
         <View style={styles.marginBottom}>
-          <Text style={styles.text}>{textAudio}</Text>
+          <Text style={styles.text}>{localization.t("text_audio")}</Text>
           <AudioBar
             category={route.params.isCategory}
             uri={uri}

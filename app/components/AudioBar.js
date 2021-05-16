@@ -9,26 +9,8 @@ import colors from "../config/colors";
 import AppContext from "../context/appContext";
 
 function AudioBar({ category, uri, setUri, item = null }) {
-  //set content language; this approach should be changed in the future
   const appContext = useContext(AppContext);
-
-  const [textPlay, setTextPlay] = useState("");
-  const [textRecord, setTextRecord] = useState("");
-  const [textAudio, setTextAudio] = useState("");
-
-  useEffect(() => {
-    if (appContext.settings.language === "mk") {
-      setTextPlay("Слушни");
-      setTextRecord("Сними");
-      setTextAudio("Звук");
-    } else {
-      setTextPlay("Play");
-      setTextRecord("Record");
-      setTextAudio("Audio");
-    }
-  }, [appContext.settings.language]);
-
-  /////////////////////////////////////////////////////////////
+  const { localization } = useContext(AppContext);
 
   category = category;
   const [recording, setRecording] = useState();
@@ -113,7 +95,7 @@ function AudioBar({ category, uri, setUri, item = null }) {
             size={40}
             color={uri ? colors.secondary : colors.dark}
           />
-          <Text style={styles.audioText}>{textPlay}</Text>
+          <Text style={styles.audioText}>{localization.t("text_play")}</Text>
         </TouchableOpacity>
         {!noSound && (
           <TouchableOpacity
@@ -126,7 +108,9 @@ function AudioBar({ category, uri, setUri, item = null }) {
               size={40}
               color={recording ? colors.danger : colors.dark}
             />
-            <Text style={styles.audioText}>{textRecord}</Text>
+            <Text style={styles.audioText}>
+              {localization.t("text_record")}
+            </Text>
           </TouchableOpacity>
         )}
 
@@ -140,7 +124,7 @@ function AudioBar({ category, uri, setUri, item = null }) {
               size={40}
               color={noSound ? colors.secondary : colors.dark}
             />
-            <Text style={styles.audioText}>{textAudio}</Text>
+            <Text style={styles.audioText}>{localization.t("text_audio")}</Text>
           </TouchableOpacity>
         ) : (
           <TouchableOpacity style={{ width: 50 }}></TouchableOpacity>

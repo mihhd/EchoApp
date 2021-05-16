@@ -1,30 +1,16 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Modal, StyleSheet, View, TouchableOpacity, Text } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import * as SQLite from "expo-sqlite";
 
+import AppContext from "../context/appContext";
 import colors from "../config/colors";
 import { useNavigation } from "@react-navigation/native";
 
 const db = SQLite.openDatabase("echoDB.db");
 
 const EditModal = ({ setModalVisible, modalVisible, itemToEdit, language }) => {
-  //set content language; this approach should be changed in the future
-
-  const [textEdit, setTextEdit] = useState("");
-  const [textDelete, setTextDelete] = useState("");
-
-  useEffect(() => {
-    if (language === "mk") {
-      setTextEdit("Измени");
-      setTextDelete("Избриши");
-    } else {
-      setTextEdit("Edit");
-      setTextDelete("Delete");
-    }
-  }, [language]);
-
-  /////////////////////////////////////////////////////////////
+  const { localization } = useContext(AppContext);
 
   const navigation = useNavigation();
   const [itemName, setItemName] = useState("");
@@ -100,7 +86,7 @@ const EditModal = ({ setModalVisible, modalVisible, itemToEdit, language }) => {
                 color={colors.medium}
               />
               <Text style={[styles.text, { color: colors.medium }]}>
-                {textEdit}
+                {localization.t("text_edit")}
               </Text>
             </TouchableOpacity>
             <TouchableOpacity
@@ -113,7 +99,7 @@ const EditModal = ({ setModalVisible, modalVisible, itemToEdit, language }) => {
                 color={colors.danger}
               />
               <Text style={[styles.text, { color: colors.danger }]}>
-                {textDelete}
+                {localization.t("text_delete")}
               </Text>
             </TouchableOpacity>
           </View>

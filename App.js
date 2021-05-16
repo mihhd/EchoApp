@@ -1,23 +1,39 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { StyleSheet } from "react-native";
 import WelcomeScreen from "./app/screens/WelcomeScreen";
 import * as SQLite from "expo-sqlite";
+import * as Localization from "expo-localization";
+import i18n from "i18n-js";
+
 import { NavigationContainer } from "@react-navigation/native";
 import MainNavigator from "./app/navigation/MainNavigator";
 import navigationTheme from "./app/navigation/navigationTheme";
 import { assetsItems } from "./app/config/assetsItems";
 import WelcomeNavigator from "./app/navigation/WelcomeNavigator";
 import AppContext from "./app/context/appContext";
+import { en, mk } from "./app/Localization/languages";
 
 import logger from "./app/utility/logger";
 logger.start();
 
 const db = SQLite.openDatabase("echoDB.db");
+i18n.fallbacks = true;
+i18n.translations = { en, mk };
 
 export default function App() {
   const [isReady, setIsReady] = useState(false);
   const [firstRun, setFirstRun] = useState(true);
   const [settings, setSettings] = useState();
+
+  const [locale, setLocale] = useState(Localization.locale);
+  const localization = useMemo(
+    () => ({
+      t: (scope, options) => i18n.t(scope, { locale, ...options }),
+      locale,
+      setLocale,
+    }),
+    [locale]
+  );
 
   executeSql = async (sql, params = []) => {
     return new Promise((resolve, reject) =>
@@ -77,6 +93,7 @@ export default function App() {
       if (sets.length > 0) {
         setSettings(sets[0]);
         setFirstRun(false);
+        setLocale(sets[0].language);
       } else {
         setFirstRun(true);
       }
@@ -103,7 +120,13 @@ export default function App() {
     <>
       {isReady ? (
         <AppContext.Provider
-          value={{ settings, setSettings, firstRun, setFirstRun }}
+          value={{
+            settings,
+            setSettings,
+            firstRun,
+            setFirstRun,
+            localization,
+          }}
         >
           <NavigationContainer theme={navigationTheme}>
             {firstRun ? <WelcomeNavigator /> : <MainNavigator />}

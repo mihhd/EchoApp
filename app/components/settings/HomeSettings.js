@@ -6,63 +6,38 @@ import SettingsItem from "../SettingsItem";
 import AppContext from "../../context/appContext";
 
 function HomeSettings() {
-  //set content language; this approach should be changed in the future
-  const appContext = useContext(AppContext);
-
-  const [textGeneral, setTextGeneral] = useState("");
-  const [textLayout, setTextLayout] = useState("");
-  const [textSupport, setextSupport] = useState("");
-  const [textAbout, setTextAbout] = useState("");
-  const [textDonate, setTextDonate] = useState("");
-
-  useEffect(() => {
-    if (appContext.settings.language === "mk") {
-      setTextGeneral("Општо");
-      setTextLayout("Изглед");
-      setextSupport("Поддршка");
-      setTextAbout("За нас");
-      setTextDonate("Донации");
-    } else {
-      setTextGeneral("General");
-      setTextLayout("View and Layout Settings");
-      setextSupport("Support");
-      setTextAbout("About");
-      setTextDonate("Donate");
-    }
-  }, [appContext.settings.language]);
-
-  /////////////////////////////////////////////////////////////
+  const { localization } = useContext(AppContext);
 
   return (
     <Screen>
       <View style={styles.container}>
         <SettingsItem
           name={"wrench-outline"}
-          title={textGeneral}
+          title={localization.t("settings_text_general")}
           screen={"General"}
         />
 
         <SettingsItem
           name={"palette-outline"}
-          title={textLayout}
+          title={localization.t("settings_text_layout")}
           screen={"Layout"}
         />
 
         <SettingsItem
           name={"account-multiple-outline"}
-          title={textSupport}
+          title={localization.t("settings_text_support")}
           screen={"Support"}
         />
 
         <SettingsItem
           name={"information-outline"}
-          title={textAbout}
+          title={localization.t("settings_text_about")}
           screen={"About"}
         />
 
         <SettingsItem
           name={"currency-usd"}
-          title={textDonate}
+          title={localization.t("settings_text_donate")}
           screen={"Donate"}
         />
       </View>

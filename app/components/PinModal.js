@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext } from "react";
 import { Modal, StyleSheet, View, TouchableOpacity, Text } from "react-native";
 
+import AppContext from "../context/appContext";
 import colors from "../config/colors";
 import AppTextInput from "./AppTextInput";
 
@@ -8,22 +9,9 @@ const PinModal = ({
   setModalVisible,
   modalVisible,
   randomPin,
-  language,
   settingsHeader,
 }) => {
-  //set content language; this approach should be changed in the future
-
-  const [textEnter, setTextEnter] = useState("");
-
-  useEffect(() => {
-    if (language === "mk") {
-      setTextEnter("Внесете го овој број: ");
-    } else {
-      setTextEnter("Enter this number: ");
-    }
-  }, [language]);
-
-  /////////////////////////////////////////////////////////////
+  const { localization } = useContext(AppContext);
 
   function enterPin(text) {
     if (text === randomPin) {
@@ -49,7 +37,7 @@ const PinModal = ({
           <View style={styles.modalView}>
             <View style={[styles.row, { backgroundColor: colors.primary }]}>
               <Text style={[styles.text, { color: colors.white }]}>
-                {textEnter + randomPin}
+                {localization.t("text_enter") + randomPin}
               </Text>
             </View>
 

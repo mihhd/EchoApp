@@ -14,16 +14,7 @@ const options = [
 
 function LayoutSettings() {
   const appContext = useContext(AppContext);
-
-  const [textName, setTextName] = useState("");
-
-  useEffect(() => {
-    if (appContext.settings.language === "mk") {
-      setTextName("Име под Симболот");
-    } else {
-      setTextName("Name below Symbol");
-    }
-  }, [appContext.settings.language]);
+  const { localization } = useContext(AppContext);
 
   const navigation = useNavigation();
 
@@ -47,7 +38,9 @@ function LayoutSettings() {
     <Screen>
       <View style={styles.container}>
         <View style={styles.row}>
-          <Text style={styles.text}>{textName}</Text>
+          <Text style={styles.text}>
+            {localization.t("settings_text_symbolName")}
+          </Text>
           <SettingsDropdown
             options={options}
             selectedValue={selectedValue}

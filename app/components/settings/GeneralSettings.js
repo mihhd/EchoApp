@@ -1,5 +1,5 @@
 import { useNavigation } from "@react-navigation/native";
-import React, { useContext, useEffect, useLayoutEffect, useState } from "react";
+import React, { useContext, useLayoutEffect, useState } from "react";
 import { View, StyleSheet, Text } from "react-native";
 import { Screen } from "react-native-screens";
 import colors from "../../config/colors";
@@ -17,16 +17,7 @@ const db = SQLite.openDatabase("echoDB.db");
 
 function GeneralSettings() {
   const appContext = useContext(AppContext);
-
-  const [textLanguage, setTextLanguage] = useState("");
-
-  useEffect(() => {
-    if (appContext.settings.language === "mk") {
-      setTextLanguage("Јазик");
-    } else {
-      setTextLanguage("Language");
-    }
-  }, [appContext.settings.language]);
+  const { localization } = useContext(AppContext);
 
   const navigation = useNavigation();
   const [selectedLanguage, setSelectedLanguage] = useState(
@@ -45,6 +36,7 @@ function GeneralSettings() {
   }
 
   function changeLanguage(selected) {
+    localization.setLocale(selected);
     setSelectedLanguage(selected);
     appContext.settings.language = selected;
   }
@@ -68,7 +60,9 @@ function GeneralSettings() {
     <Screen>
       <View style={styles.container}>
         <View style={styles.row}>
-          <Text style={styles.text}>{textLanguage}</Text>
+          <Text style={styles.text}>
+            {localization.t("settings_text_language")}
+          </Text>
           <SettingsDropdown
             options={languageOptions}
             selectedValue={selectedLanguage}

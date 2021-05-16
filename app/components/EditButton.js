@@ -6,7 +6,7 @@ import { TouchableOpacity } from "react-native-gesture-handler";
 import PinModal from "./PinModal";
 import { useState } from "react";
 
-function EditButton({ settingsHeader, language }) {
+function EditButton({ settingsHeader }) {
   const [modalVisible, setModalVisible] = useState(false);
   const [randomPin, setRandomPin] = useState("0000");
 
@@ -30,7 +30,6 @@ function EditButton({ settingsHeader, language }) {
         modalVisible={modalVisible}
         randomPin={randomPin}
         settingsHeader={settingsHeader}
-        language={language}
       />
     </>
   );
